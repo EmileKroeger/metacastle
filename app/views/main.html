@@ -1,8 +1,10 @@
 <div class="castlebox">
-  <div ng-repeat="row in rows" class="row">
-    <span ng-repeat="cell in row"
-      ng-style="getStyle($index, $parent.$index)"
-      class="tile test">
+  <div ng-repeat="y in range(31)" class="row">
+    <span ng-repeat="x in range(57)"
+      ng-style="getStyle(x, y)"
+      class="tile"
+      title="{{100 * y + x}}"
+      >
       &nbsp;
     </span>
   </div>
