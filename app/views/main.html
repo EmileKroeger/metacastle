@@ -1,12 +1,25 @@
 <div class="castlebox">
-  <div ng-repeat="y in range(31)" class="row">
-    <span ng-repeat="x in range(57)"
-      ng-style="getStyle(x, y, getTilemapTile(x, y))"
+  <div ng-repeat="j in range(30)" class="row">
+    <span ng-repeat="i in range(30)"
+      ng-style="getStyle(i, j, getCastleTile(i,  CASTLEHEI - 1 - j))"
       class="tile"
-      title="{{100 * y + x}}"
+      title="{{i}}, {{CASTLEHEI - 1 - j}}"
       >
       &nbsp;
     </span>
   </div>
-  
+</div>
+
+Tilemap:
+
+<div class="tilemapbox">
+  <div ng-repeat="j in range(31)" class="row">
+    <span ng-repeat="i in range(56)"
+      ng-style="getStyle(i, j, getTilemapTile(i, 31 - 1 - j))"
+      class="tile"
+      title="{{100 * j + i}}"
+      >
+      &nbsp;
+    </span>
+  </div>
 </div>

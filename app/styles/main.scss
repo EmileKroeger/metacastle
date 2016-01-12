@@ -10,7 +10,12 @@ span, div {
 }
 
 .castlebox {
-  position: absolute;
+  position: relative;
+  height: 500px;
+}
+
+.tilemapbox {
+  position: relative;
 }
 
 .tile {
@@ -19,10 +24,6 @@ span, div {
   height: 16px;
   position: absolute;
   background-image: url("../images/roguelike.png")
-}
-
-.test {
-  background-position: 0 -17px;
 }
 
 .row {

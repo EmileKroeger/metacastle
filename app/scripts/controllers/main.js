@@ -24,8 +24,38 @@ angular.module('metacastleApp')
   })
   .controller('MainCtrl', function ($scope, sUtils) {
     $scope.range = sUtils.range;
-    $scope.getTilemapTile = function(i, j) {
-      return 100 * j + i;
+    $scope.getTilemapTile = function(x, y) {
+      // Return the tile code from the same place
+      return 100 * (30 - y) + x;
+    }
+    $scope.CASTLEWID = 30;
+    $scope.CASTLEHEI = 30;
+    
+    var tiles = {}
+    
+    function addRect(x0, y0, wid, hei, kind) {
+      for (var dx = 0; dx < wid; dx++) {
+        for (var dy = 0; dy < hei; dy++) {
+          tiles[[x0+dx, y0+dy]] = kind;
+        }
+      }
+    }
+    addRect(10, 10, 10, 10, 1424);
+
+    $scope.getCastleTile = function(x, y) {
+      var tile = tiles[[x, y]];
+      if (tile) {
+        return tile;
+      } else {
+        return 0;
+      }
+      if (x < 10) {
+        return 0;
+      }
+      else if (x < 20) {
+        return 1424;
+      }
+      return 0;
     }
     
     $scope.getStyle = sUtils.getStyle;

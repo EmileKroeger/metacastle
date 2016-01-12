@@ -9,10 +9,16 @@ span, div {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000312}}
 .castlebox {
-  position: absolute;
+  position: relative;
+  height: 500px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000316}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000317}}
+.tilemapbox {
+  position: relative;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000321}}
 .tile {
   display: inline-block;
   width: 16px;
@@ -21,12 +27,7 @@ span, div {
   background-image: url("../images/roguelike.png");
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000324}}
-.test {
-  background-position: 0 -17px;
-}
-
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000328}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/apple\/my\/prog\/web\/metacastle\/app\/styles\/main\.scss}line{font-family:\0000329}}
 .row {
   font-size: 0px;
 }
