@@ -1,38 +1,32 @@
 'use strict';
-
-/**
- * @ngdoc function
- * @name metacastleApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the metacastleApp
- */
 angular.module('metacastleApp')
-  .controller('MainCtrl', function ($scope) {
-    $scope.range = 
-    function range(count) {
+  .service('sUtils', function () {
+    this.range = function(count) {
         return Array.apply(0, Array(count))
                     .map(function (element, index) { 
                              return index;  
                          });
     }
-    
-    function tilePos(tilecode) {
+    self = this;
+    this.tilePos = function tilePos(tilecode) {
       var ti = tilecode % 100;
       var tj = Math.floor((tilecode - ti) / 100);
       return "-" + (17 * ti) + "px -" + (17 * tj) + "px";
     }
-    
-    $scope.getStyle = function(i, j) {
+    this.getStyle = function(i, j, tilecode) {
       var style = {
         left: (16 * i) + 'px',
         top: (16 * j) + 'px',
-        "background-position": tilePos(100 * j + i),
+        "background-position": self.tilePos(tilecode),
       };
       return style;
+    };
+  })
+  .controller('MainCtrl', function ($scope, sUtils) {
+    $scope.range = sUtils.range;
+    $scope.getTilemapTile = function(i, j) {
+      return 100 * j + i;
     }
-    $scope.rows = [
-      [1, 2, 3],
-      [4, 5, 6],
-    ];
+    
+    $scope.getStyle = sUtils.getStyle;
   });

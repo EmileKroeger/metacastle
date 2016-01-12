@@ -1,7 +1,7 @@
 <div class="castlebox">
   <div ng-repeat="y in range(31)" class="row">
     <span ng-repeat="x in range(57)"
-      ng-style="getStyle(x, y)"
+      ng-style="getStyle(x, y, getTilemapTile(x, y))"
       class="tile"
       title="{{100 * y + x}}"
       >
