@@ -49,10 +49,14 @@ angular.module('metacastleApp')
     }
     
     function castleWallMaterial(topleft) {
-      // right-iased crenelation
-      this.tl = topleft + 204;
-      this.tm = topleft + 205;
-      this.tr = topleft + 206;
+      // right-biased crenelation
+      //this.tl = topleft + 204;
+      //this.tm = topleft + 205;
+      //this.tr = topleft + 206;
+      // Use flat wall on top too
+      this.tl = topleft + 304;
+      this.tm = topleft + 305;
+      this.tr = topleft + 306;
       // "non-cracked" wall
       this.ml = topleft + 304;
       this.mm = topleft + 305;
@@ -69,8 +73,22 @@ angular.module('metacastleApp')
     //var GREYPLATFORM = new castlePlatformMaterial(1220);
     var BLUECRENELATION = new castlePlatformMaterial(1227);
     
+    $scope.extraTiles = [];
     function addTile(x, y, tilecode) {
       tiles[[x, y]] = tilecode;
+      $scope.extraTiles.push({
+        x: x,
+        y: y,
+        tilecode: tilecode,
+      });
+    }
+
+    function fillRect(x0, y0, wid, hei, tilecode) {
+      for (var x=x0; x < x0 + wid; x++) {
+        for (var y=y0; y < y0 + hei; y++) {
+          addTile(x, y, tilecode);
+        }
+      }
     }
     
     function addRect(x0, y0, wid, hei, kind) {
@@ -83,7 +101,7 @@ angular.module('metacastleApp')
       }
       addTile(x0, y1, kind.tl);
       // Middle
-      for (var dx = 1; dx < wid; dx++) {
+      for (var dx = 1; dx < wid - 1; dx++) {
         addTile(x0+dx, y0+0, kind.bm);
         for (var dy = 1; dy < hei - 1; dy++) {
           addTile(x0+dx, y0+dy, kind.mm);
@@ -98,20 +116,45 @@ angular.module('metacastleApp')
       addTile(x1, y1, kind.tr);
     }
     
-    function addTower(x, y, wid, hei, platform) {
-      addRect(x, y, wid, hei, BLUEWALLS);
+    function addBuilding(x, y, wid, hei, platform) {
+      // Wall
+      addRect(x, y, wid, hei - 1, BLUEWALLS);
+      // Platform tiles
+      fillRect(x, y + hei - 1, wid, platform - 1, 9);
+      // Crenelation
       addRect(x, y + hei - 1, wid, platform, BLUECRENELATION);
     }
     
-    addTower(4, 17, 20, 5, 3);
-    addTower(3, 16, 5, 10, 4);
-    addTower(22, 16, 5, 10, 4);
+    function thinTower(cx, cy, hei) {
+      addBuilding(cx - 2, cy - 2, 5, hei, 4);
+    }
     
-    addTower(4, 3, 3, 3, 17);
-    addTower(23, 3, 3, 3, 17);
-    addTower(4, 3, 20, 5, 3);
-    addTower(3, 2, 5, 10, 4);
-    addTower(22, 2, 5, 10, 4);
+    function horizontalWall(cxl, cy, cxr, hei) {
+      addBuilding(cxl+2, cy - 1, cxr - cxl-2, hei, 3);
+    }
+    function verticalWall(cx, cyb, cyt, hei) {
+      addBuilding(cx-1, cyb + 1, 3, hei, cyt - cyb - 2);
+    }
+    
+    // Ground
+    
+    fillRect(5, 4, 20, 15, 106) // Dirt
+    
+    // Back wall
+    horizontalWall(5, 18, 24, 5)
+    // Back towers
+    thinTower(5, 18, 10);
+    thinTower(24, 18, 10);
+    
+    verticalWall(5, 4, 18, 5)
+    verticalWall(24, 4, 18, 5)
+
+    horizontalWall(5, 4, 24, 5)
+    thinTower(5, 4, 10);
+    thinTower(24, 4, 10);
+    
+    addBuilding(10, 13, 10, 8, 7);
+    addBuilding(13, 22, 4, 4, 4);
 
     /*
     addRect(9, 6, 12, 6, BLUEWALLS);
@@ -123,6 +166,9 @@ angular.module('metacastleApp')
     */
 
     $scope.getCastleTile = function(x, y) {
+      if (true) {
+        return 5
+      }
       var tile = tiles[[x, y]];
       if (tile) {
         return tile;

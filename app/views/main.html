@@ -8,6 +8,12 @@
       &nbsp;
     </span>
   </div>
+  <div
+    ng-repeat="tile in extraTiles"
+    class="tile"
+      ng-style="getStyle(tile.x, CASTLEHEI - 1 - tile.y, tile.tilecode)"
+    >
+  </div>
 </div>
 
 Tilemap:
