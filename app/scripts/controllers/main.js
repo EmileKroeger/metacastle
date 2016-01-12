@@ -69,29 +69,33 @@ angular.module('metacastleApp')
     //var GREYPLATFORM = new castlePlatformMaterial(1220);
     var BLUECRENELATION = new castlePlatformMaterial(1227);
     
+    function addTile(x, y, tilecode) {
+      tiles[[x, y]] = tilecode;
+    }
+    
     function addRect(x0, y0, wid, hei, kind) {
       var x1 = x0 + wid - 1;
       var y1 = y0 + hei - 1;
       // Left column
-      tiles[[x0, y0+0]] = kind.bl;
+      addTile(x0, y0+0, kind.bl);
       for (var dy = 1; dy < hei - 1; dy++) {
-        tiles[[x0+0, y0+dy]] = kind.ml;
+        addTile(x0, y0+dy, kind.ml);
       }
-      tiles[[x0, y1]] = kind.tl;
+      addTile(x0, y1, kind.tl);
       // Middle
       for (var dx = 1; dx < wid; dx++) {
-        tiles[[x0+dx, y0+0]] = kind.bm;
+        addTile(x0+dx, y0+0, kind.bm);
         for (var dy = 1; dy < hei - 1; dy++) {
-          tiles[[x0+dx, y0+dy]] = kind.mm;
+          addTile(x0+dx, y0+dy, kind.mm);
         }
-        tiles[[x0+dx, y1]] = kind.tm;
+        addTile(x0+dx, y1, kind.tm);
       }
       // Right column
-      tiles[[x1, y0+0]] = kind.br;
+      addTile(x1, y0+0, kind.br);
       for (var dy = 1; dy < hei - 1; dy++) {
-        tiles[[x1, y0+dy]] = kind.mr;
+        addTile(x1, y0+dy, kind.mr);
       }
-      tiles[[x1, y1]] = kind.tr;
+      addTile(x1, y1, kind.tr);
     }
     
     function addTower(x, y, wid, hei, platform) {
