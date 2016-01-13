@@ -132,8 +132,21 @@ angular.module('metacastleApp')
     function horizontalWall(cxl, cy, cxr, hei) {
       addBuilding(cxl+2, cy - 1, cxr - cxl-2, hei, 3);
     }
-    function verticalWall(cx, cyb, cyt, hei) {
+    function OLDverticalWall(cx, cyb, cyt, hei) {
       addBuilding(cx-1, cyb + 1, 3, hei, cyt - cyb - 2);
+    }
+    function verticalWall(cx, cyb, cyt, hei) {
+      var y = cyb + hei;
+      var wid = 3;
+      var platform = cyt - cyb - 2;
+      fillRect(cx - 1, y, wid, platform - 1, 9);
+      // BlueCrenelation
+      //addRect(cx - 1, y, wid, platform, BLUECRENELATION);
+      // Left crenelation
+      fillRect(cx - 1, y, 1, platform - 1, 3228); // Left crenelation
+      addTile(cx - 1, y + platform - 1, 3131);
+      fillRect(cx + 1, y, 1, platform - 1, 3230); // Right crenelation
+      addTile(cx + 1, y + platform - 1, 3133);
     }
     
     // Ground
@@ -155,6 +168,10 @@ angular.module('metacastleApp')
     
     addBuilding(10, 13, 10, 8, 7);
     addBuilding(13, 22, 4, 4, 4);
+
+    // Gates
+    addTile(14, 3, 632);
+    addTile(15, 3, 633);
 
     /*
     addRect(9, 6, 12, 6, BLUEWALLS);
