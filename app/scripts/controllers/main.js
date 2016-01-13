@@ -24,19 +24,23 @@ angular.module('metacastleApp')
   })
   .service('sMaterials', function () {
     function castlePlatformMaterial(topleft) {
-      // Crenelation again
+      // Crenelation
       this.tl = topleft + 1901;
       this.tm = topleft + 1902;
       this.tr = topleft + 1903;
-      // And flattish
+      // Alternative top, for crenelation
+      this.tl_cut = topleft + 1904;
+      this.tr_cut = topleft + 1906;
+      // edges only
       this.ml = topleft + 2001;
-      this.mm = topleft + 2002;
+      this.mm = topleft + 2002; // empy actually
       this.mr = topleft + 2003;
-      // Same as above (for now)
+      // Bottom crenelation
       this.bl = topleft + 2101;
       this.bm = topleft + 2102;
       this.br = topleft + 2103;
     }
+    // TODO: add "FILL" and "partial fill left/right" methods.
     
     function castleWallMaterial(topleft) {
       // right-biased crenelation
@@ -51,6 +55,7 @@ angular.module('metacastleApp')
       this.ml = topleft + 304;
       this.mm = topleft + 305;
       this.mr = topleft + 306;
+      // Bottom joins ground
       this.bl = topleft + 301;
       this.bm = topleft + 300;
       this.br = topleft + 303;
@@ -115,64 +120,86 @@ angular.module('metacastleApp')
       addTile(x1, y1, kind.tr);
     }
     
-    // TODO: get all of these parameters from a style param.
-    
-    function addBuilding(x, y, wid, hei, platform) {
+    function addBuilding(style, x, y, wid, hei, platform) {
       // Wall
-      addRect(x, y, wid, hei - 1, sMaterials.BLUEWALLS);
+      addRect(x, y, wid, hei - 1, style.wallMaterial);
       // Platform tiles
-      fillRect(x, y + hei - 1, wid, platform - 1, 9);
+      fillRect(x, y + hei - 1, wid, platform - 1, style.platformTile);
       // Crenelation
-      addRect(x, y + hei - 1, wid, platform, sMaterials.BLUECRENELATION);
+      addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
     }
     
-    function thinTower(cx, cy, hei) {
-      addBuilding(cx - 2, cy - 2, 5, hei, 4);
+    function thinTower(style, cx, cy, hei) {
+      addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
+      addTile(cx, cy + hei - 1, style.trapdoor)
     }
     
-    function horizontalWall(cxl, cy, cxr, hei) {
-      addBuilding(cxl+2, cy - 1, cxr - cxl-2, hei, 3);
+    function horizontalWall(style, cxl, cy, cxr, hei) {
+      addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
     }
-    function OLDverticalWall(cx, cyb, cyt, hei) {
-      addBuilding(cx-1, cyb + 1, 3, hei, cyt - cyb - 2);
+    function gatedHorizontalWall(style, cxl, cy, cxr, hei) {
+      addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
+      // Gates
+      var middleLeft = Math.floor(0.5 * (cxl + cxr));
+      addTile(middleLeft, cy - 1, style.gateL);
+      addTile(middleLeft + 1, cy - 1, style.gateR);
     }
-    function verticalWall(cx, cyb, cyt, hei) {
+
+    function OLDverticalWall(style, cx, cyb, cyt, hei) {
+      addBuilding(style, cx-1, cyb + 1, 3, hei, cyt - cyb - 2);
+    }
+    function verticalWall(style, cx, cyb, cyt, hei) {
       var y = cyb + hei;
       var wid = 3;
       var platform = cyt - cyb - 2;
-      fillRect(cx - 1, y, wid, platform - 1, 9);
+      fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
       // BlueCrenelation
       //addRect(cx - 1, y, wid, platform, sMaterials.BLUECRENELATION);
       // Left crenelation
-      fillRect(cx - 1, y, 1, platform - 1, 3228); // Left crenelation
-      addTile(cx - 1, y + platform - 1, 3131);
-      fillRect(cx + 1, y, 1, platform - 1, 3230); // Right crenelation
-      addTile(cx + 1, y + platform - 1, 3133);
+      var crenelationMaterial = style.crenelationMaterial;
+      fillRect(cx - 1, y, 1, platform - 1, crenelationMaterial.ml);
+      addTile(cx - 1, y + platform - 1, crenelationMaterial.tl_cut);
+      fillRect(cx + 1, y, 1, platform - 1, crenelationMaterial.mr);
+      addTile(cx + 1, y + platform - 1, crenelationMaterial.tr_cut);
+      addTile(cx, y + platform - 1, style.door);
     }
-    
-    // Ground
-    
-    fillRect(5, 4, 20, 15, 106) // Dirt
-    
-    // Back wall
-    horizontalWall(5, 18, 24, 5)
-    // Back towers
-    thinTower(5, 18, 10);
-    thinTower(24, 18, 10);
-    
-    verticalWall(5, 4, 18, 5)
-    verticalWall(24, 4, 18, 5)
 
-    horizontalWall(5, 4, 24, 5)
-    thinTower(5, 4, 10);
-    thinTower(24, 4, 10);
+    function makeCastle(style) {
+      // Ground
+      fillRect(5, 4, 20, 15, style.groundTile) // Dirt
     
-    addBuilding(10, 13, 10, 8, 7);
-    addBuilding(13, 22, 4, 4, 4);
+      // Back wall
+      horizontalWall(style, 5, 18, 24, 5)
+      // Back towers
+      thinTower(style, 5, 18, 10);
+      thinTower(style, 24, 18, 10);
+    
+      verticalWall(style, 5, 4, 18, 5)
+      verticalWall(style, 24, 4, 18, 5)
 
-    // Gates
-    addTile(14, 3, 632);
-    addTile(15, 3, 633);
+      gatedHorizontalWall(style, 5, 4, 24, 5)
+      thinTower(style, 5, 4, 10);
+      thinTower(style, 24, 4, 10);
+    
+      // Big-ass dungeon
+      addBuilding(style, 10, 13, 10, 8, 7);
+      addBuilding(style, 13, 22, 4, 4, 4);
+
+    }
+
+    var aStyle = {
+      wallMaterial: sMaterials.BLUEWALLS,
+      crenelationMaterial: sMaterials.BLUECRENELATION,
+      platformTile: 9,
+      groundTile: 106, // dirt
+      gateL: 632,
+      gateR: 633,
+      door: 33,
+      trapdoor: 1829,
+    };
+    
+    makeCastle(aStyle);
+    
 
     /*
     addRect(9, 6, 12, 6, sMaterials.BLUEWALLS);
