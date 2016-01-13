@@ -22,17 +22,7 @@ angular.module('metacastleApp')
       return style;
     };
   })
-  .controller('MainCtrl', function ($scope, sUtils) {
-    $scope.range = sUtils.range;
-    $scope.getTilemapTile = function(x, y) {
-      // Return the tile code from the same place
-      return 100 * (30 - y) + x;
-    }
-    $scope.CASTLEWID = 30;
-    $scope.CASTLEHEI = 30;
-    
-    var tiles = {};
-    
+  .service('sMaterials', function () {
     function castlePlatformMaterial(topleft) {
       // Crenelation again
       this.tl = topleft + 1901;
@@ -66,17 +56,25 @@ angular.module('metacastleApp')
       this.br = topleft + 303;
     }
     
-    var YELLOWWALLS = new castleWallMaterial(1213);
-    var GREYWALLS = new castleWallMaterial(1220);
-    var BLUEWALLS = new castleWallMaterial(1227);
-    var BROWNWALLS = new castleWallMaterial(1234);
+    this.YELLOWWALLS = new castleWallMaterial(1213);
+    this.GREYWALLS = new castleWallMaterial(1220);
+    this.BLUEWALLS = new castleWallMaterial(1227);
+    this.BROWNWALLS = new castleWallMaterial(1234);
     //var GREYPLATFORM = new castlePlatformMaterial(1220);
-    var BLUECRENELATION = new castlePlatformMaterial(1227);
+    this.BLUECRENELATION = new castlePlatformMaterial(1227);
+  })
+  .controller('MainCtrl', function ($scope, sUtils, sMaterials) {
+    $scope.range = sUtils.range;
+    $scope.getTilemapTile = function(x, y) {
+      // Return the tile code from the same place
+      return 100 * (30 - y) + x;
+    }
+    $scope.CASTLEWID = 30;
+    $scope.CASTLEHEI = 30;
     
-    $scope.extraTiles = [];
+    $scope.tiles = [];
     function addTile(x, y, tilecode) {
-      tiles[[x, y]] = tilecode;
-      $scope.extraTiles.push({
+      $scope.tiles.push({
         x: x,
         y: y,
         tilecode: tilecode,
@@ -92,6 +90,7 @@ angular.module('metacastleApp')
     }
     
     function addRect(x0, y0, wid, hei, kind) {
+      // Fills in a rectangle with a special material.
       var x1 = x0 + wid - 1;
       var y1 = y0 + hei - 1;
       // Left column
@@ -116,13 +115,15 @@ angular.module('metacastleApp')
       addTile(x1, y1, kind.tr);
     }
     
+    // TODO: get all of these parameters from a style param.
+    
     function addBuilding(x, y, wid, hei, platform) {
       // Wall
-      addRect(x, y, wid, hei - 1, BLUEWALLS);
+      addRect(x, y, wid, hei - 1, sMaterials.BLUEWALLS);
       // Platform tiles
       fillRect(x, y + hei - 1, wid, platform - 1, 9);
       // Crenelation
-      addRect(x, y + hei - 1, wid, platform, BLUECRENELATION);
+      addRect(x, y + hei - 1, wid, platform, sMaterials.BLUECRENELATION);
     }
     
     function thinTower(cx, cy, hei) {
@@ -141,7 +142,7 @@ angular.module('metacastleApp')
       var platform = cyt - cyb - 2;
       fillRect(cx - 1, y, wid, platform - 1, 9);
       // BlueCrenelation
-      //addRect(cx - 1, y, wid, platform, BLUECRENELATION);
+      //addRect(cx - 1, y, wid, platform, sMaterials.BLUECRENELATION);
       // Left crenelation
       fillRect(cx - 1, y, 1, platform - 1, 3228); // Left crenelation
       addTile(cx - 1, y + platform - 1, 3131);
@@ -174,32 +175,16 @@ angular.module('metacastleApp')
     addTile(15, 3, 633);
 
     /*
-    addRect(9, 6, 12, 6, BLUEWALLS);
-    addRect(9, 11, 12, 3, BLUECRENELATION);
-    addRect(5, 5, 5, 10, BLUEWALLS);
-    addRect(5, 13, 5, 5, BLUECRENELATION);
-    addRect(20, 5, 5, 10, BLUEWALLS);
-    addRect(20, 13, 5, 5, BLUECRENELATION);
+    addRect(9, 6, 12, 6, sMaterials.BLUEWALLS);
+    addRect(9, 11, 12, 3, sMaterials.BLUECRENELATION);
+    addRect(5, 5, 5, 10, sMaterials.BLUEWALLS);
+    addRect(5, 13, 5, 5, sMaterials.BLUECRENELATION);
+    addRect(20, 5, 5, 10, sMaterials.BLUEWALLS);
+    addRect(20, 13, 5, 5, sMaterials.BLUECRENELATION);
     */
 
     $scope.getCastleTile = function(x, y) {
-      if (true) {
-        return 5
-      }
-      var tile = tiles[[x, y]];
-      if (tile) {
-        return tile;
-      } else {
-        return 0;
-      }
-      if (x < 10) {
-        return 0;
-      }
-      else if (x < 20) {
-        return 1424;
-      }
-      return 0;
+      return 5;
     }
-    
     $scope.getStyle = sUtils.getStyle;
   });
