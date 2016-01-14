@@ -129,15 +129,19 @@ angular.module('metacastleApp')
       addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
     }
     
-    function thinTower(style, cx, cy, hei) {
+    function thinTower(style, cx, cy) {
+      var hei = style.towerHeight;
       addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
-      addTile(cx, cy + hei - 1, style.trapdoor)
+      addTile(cx, cy + hei - 2, style.trapdoor)
+      addTile(cx, cy + hei - 5, style.window)
     }
     
-    function horizontalWall(style, cxl, cy, cxr, hei) {
+    function horizontalCurtainWall(style, cxl, cy, cxr) {
+      var hei = style.curtainWallHeight;
       addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
     }
-    function gatedHorizontalWall(style, cxl, cy, cxr, hei) {
+    function gatedHorizontalCurtainWall(style, cxl, cy, cxr) {
+      var hei = style.curtainWallHeight;
       addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
       // Gates
       var middleLeft = Math.floor(0.5 * (cxl + cxr));
@@ -145,11 +149,12 @@ angular.module('metacastleApp')
       addTile(middleLeft + 1, cy - 1, style.gateR);
     }
 
-    function OLDverticalWall(style, cx, cyb, cyt, hei) {
+    function OLDverticalWall(style, cx, cyb, cyt) {
+      var hei = style.curtainWallHeight;
       addBuilding(style, cx-1, cyb + 1, 3, hei, cyt - cyb - 2);
     }
-    function verticalWall(style, cx, cyb, cyt, hei) {
-      var y = cyb + hei;
+    function verticalCurtainWall(style, cx, cyb, cyt) {
+      var y = cyb + style.curtainWallHeight;
       var wid = 3;
       var platform = cyt - cyb - 2;
       fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
@@ -169,22 +174,21 @@ angular.module('metacastleApp')
       fillRect(5, 4, 20, 15, style.groundTile) // Dirt
     
       // Back wall
-      horizontalWall(style, 5, 18, 24, 5)
+      horizontalCurtainWall(style, 5, 18, 24);
       // Back towers
-      thinTower(style, 5, 18, 10);
-      thinTower(style, 24, 18, 10);
+      thinTower(style, 5, 18);
+      thinTower(style, 24, 18);
     
-      verticalWall(style, 5, 4, 18, 5)
-      verticalWall(style, 24, 4, 18, 5)
+      verticalCurtainWall(style, 5, 4, 18);
+      verticalCurtainWall(style, 24, 4, 18);
 
-      gatedHorizontalWall(style, 5, 4, 24, 5)
+      gatedHorizontalCurtainWall(style, 5, 4, 24);
       thinTower(style, 5, 4, 10);
       thinTower(style, 24, 4, 10);
     
       // Big-ass dungeon
       addBuilding(style, 10, 13, 10, 8, 7);
       addBuilding(style, 13, 22, 4, 4, 4);
-
     }
 
     var aStyle = {
@@ -195,7 +199,11 @@ angular.module('metacastleApp')
       gateL: 632,
       gateR: 633,
       door: 33,
+      window: 845,
       trapdoor: 1829,
+      towerHeight: 10,
+      curtainWallHeight: 5,
+      
     };
     
     makeCastle(aStyle);
