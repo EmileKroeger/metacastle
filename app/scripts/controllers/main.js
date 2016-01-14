@@ -129,13 +129,6 @@ angular.module('metacastleApp')
       addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
     }
     
-    function thinTower(style, cx, cy) {
-      var hei = style.towerHeight;
-      addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
-      addTile(cx, cy + hei - 2, style.trapdoor)
-      addTile(cx, cy + hei - 5, style.window)
-    }
-    
     function horizontalCurtainWall(style, cxl, cy, cxr) {
       var hei = style.curtainWallHeight;
       addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
@@ -169,6 +162,40 @@ angular.module('metacastleApp')
       addTile(cx, y + platform - 1, style.door);
     }
 
+    // Buildings
+    function thinTower(style, cx, cy) {
+      var hei = style.towerHeight;
+      addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
+      addTile(cx, cy + hei - 2, style.trapdoor)
+      addTile(cx - 1, cy + hei - 5, style.window)
+      addTile(cx + 1, cy + hei - 5, style.window)
+    }
+
+    function tinyTower(style, cx, cy) {
+      var hei = style.towerHeight;
+      addBuilding(style, cx - 1, cy - 1, 3, hei, 3);
+      addTile(cx, cy + hei - 4, style.window)
+    }
+
+
+    function buildingWithHat(style, x, y, wid) {
+      addBuilding(style, x, y, wid, 8, 7);
+      addBuilding(style, x + 3, y + 9, wid - 6, 4, 4);
+      var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
+      addTile(middleLeft, y, style.gateL);
+      addTile(middleLeft + 1, y, style.gateR);
+    }
+    
+    function towerCornerBuilding(style, x, y, wid) {
+      addBuilding(style, x, y, wid, 8, 7);
+      tinyTower(style, x, y);
+      tinyTower(style, x + wid - 1, y);
+      // TODO: find a way of factoring this
+      var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
+      addTile(middleLeft, y, style.gateL);
+      addTile(middleLeft + 1, y, style.gateR);
+    }
+
     function makeCastle(style) {
       // Ground
       fillRect(5, 4, 20, 15, style.groundTile) // Dirt
@@ -176,20 +203,45 @@ angular.module('metacastleApp')
       // Back wall
       horizontalCurtainWall(style, 5, 18, 24);
       // Back towers
-      thinTower(style, 5, 18);
-      thinTower(style, 24, 18);
+      style.towerFunc(style, 5, 18);
+      style.towerFunc(style, 24, 18);
+
+      // Big-ass dungeon
+      style.dungeonFunc(style, 10, 13, 10);
     
+      // side walls
       verticalCurtainWall(style, 5, 4, 18);
       verticalCurtainWall(style, 24, 4, 18);
 
+      // Front walls
       gatedHorizontalCurtainWall(style, 5, 4, 24);
-      thinTower(style, 5, 4, 10);
-      thinTower(style, 24, 4, 10);
-    
-      // Big-ass dungeon
-      addBuilding(style, 10, 13, 10, 8, 7);
-      addBuilding(style, 13, 22, 4, 4, 4);
+      style.towerFunc(style, 5, 4, 10);
+      style.towerFunc(style, 24, 4, 10);
+      
+      // Alternative entrance
+      addBuilding(style, 12, 2, 6, 6, 5);
     }
+    
+    function makeCurtainWall(style, path) {
+      // 0: draw ground
+      // 1: draw back walls
+      // 2: draw back towers
+      // 3: draw back side walls
+      
+      // 4: draw inside stuff, maybe
+      
+      // 6: draw front walls
+      // 7: draw front towers
+    }
+    
+    var wallPath = [
+      [5, 18],
+      [24, 18],
+      [24, 4],
+      [5, 4],
+    ];
+    
+    //makeCurtainWall(wallPath);
 
     var aStyle = {
       wallMaterial: sMaterials.BLUEWALLS,
@@ -203,20 +255,13 @@ angular.module('metacastleApp')
       trapdoor: 1829,
       towerHeight: 10,
       curtainWallHeight: 5,
-      
+      towerFunc: thinTower,
+      //towerFunc: tinyTower,
+      //dungeonFunc: buildingWithHat,
+      dungeonFunc: towerCornerBuilding,
     };
     
     makeCastle(aStyle);
-    
-
-    /*
-    addRect(9, 6, 12, 6, sMaterials.BLUEWALLS);
-    addRect(9, 11, 12, 3, sMaterials.BLUECRENELATION);
-    addRect(5, 5, 5, 10, sMaterials.BLUEWALLS);
-    addRect(5, 13, 5, 5, sMaterials.BLUECRENELATION);
-    addRect(20, 5, 5, 10, sMaterials.BLUEWALLS);
-    addRect(20, 13, 5, 5, sMaterials.BLUECRENELATION);
-    */
 
     $scope.getCastleTile = function(x, y) {
       return 5;
