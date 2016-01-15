@@ -196,42 +196,94 @@ angular.module('metacastleApp')
       addTile(middleLeft + 1, y, style.gateR);
     }
 
-    function makeCastle(style) {
+    function makeCastle(style, curtainPath) {
       // Ground
       fillRect(5, 4, 20, 15, style.groundTile) // Dirt
     
       // Back wall
-      horizontalCurtainWall(style, 5, 18, 24);
+      //horizontalCurtainWall(style, 5, 18, 24);
       // Back towers
-      style.towerFunc(style, 5, 18);
-      style.towerFunc(style, 24, 18);
+      //style.towerFunc(style, 5, 18);
+      //style.towerFunc(style, 24, 18);
 
       // Big-ass dungeon
       style.dungeonFunc(style, 10, 13, 10);
+
+      var renderers = makeCurtainWall(style, curtainPath)
+      //var renderers = [];
     
       // side walls
-      verticalCurtainWall(style, 5, 4, 18);
+      //verticalCurtainWall(style, 5, 4, 18);
+      var vrender = makeCurtainSegmentRenderer([5, 4], [5, 18]); 
+      //renderers = [vrender];
       verticalCurtainWall(style, 24, 4, 18);
 
       // Front walls
-      gatedHorizontalCurtainWall(style, 5, 4, 24);
-      style.towerFunc(style, 5, 4, 10);
-      style.towerFunc(style, 24, 4, 10);
+      //gatedHorizontalCurtainWall(style, 5, 4, 24);
+      //style.towerFunc(style, 5, 4, 10);
+      //style.towerFunc(style, 24, 4, 10);
+      
       
       // Alternative entrance
-      addBuilding(style, 12, 2, 6, 6, 5);
+      //addBuilding(style, 12, 2, 6, 6, 5);
+      var entranceRenderer = new BuildingRenderer(addBuilding, 12, 2, [6, 6, 5]);
+      renderers.push(entranceRenderer)
+      //entranceRenderer.render(style);
+      renderBuildings(style, renderers);
     }
     
+    function makeCurtainSegmentRenderer(posA, posB) {
+      var xA = posA[0];
+      var yA = posA[1];
+      var xB = posB[0];
+      var yB = posB[1];
+      if (xA == xB) {
+        // Same X, it's vertical
+        // Actually we want the smallest
+        var y = Math.min(yA, yB);
+        var y2 = Math.max(yA, yB);
+        return new BuildingRenderer(verticalCurtainWall, xA, y, [y2]);
+      } else if (yA == yB) {
+        // Same Y, it's horizontal
+        var x = Math.min(xA, xB);
+        var x2 = Math.max(xA, xB);
+        return new BuildingRenderer(horizontalCurtainWall, x, yA, [x2]);
+      }
+    }
+    
+    // Let's take a stab at making this object-oriented.
+    function BuildingRenderer(func, x, y, args) {
+      this.func = func;
+      //console.debug(["init", func, x, y, args]);
+      this.x = x;
+      this.y = y;
+      this.args = args;
+    }
+    BuildingRenderer.prototype.render = function(style) {
+      var call_args = [style, this.x, this.y];
+      call_args.push.apply(call_args, this.args);
+      this.func.apply(this, call_args);
+    }
+    
+    function renderBuildings(style, buildings) {
+      // TODO: figure out a way of not using the center X
+      buildings.sort(function(bA, bB) {return bA.y < bB.y;});
+      buildings.forEach(function(building) {
+        building.render(style);
+      });
+    }
     function makeCurtainWall(style, path) {
-      // 0: draw ground
-      // 1: draw back walls
-      // 2: draw back towers
-      // 3: draw back side walls
-      
-      // 4: draw inside stuff, maybe
-      
-      // 6: draw front walls
-      // 7: draw front towers
+      var renderers = [];
+      var prev = path[path.length - 1];
+      path.forEach(function(towerPos) {
+        renderers.push(makeCurtainSegmentRenderer(prev, towerPos));
+        var tower = new BuildingRenderer(style.towerFunc, towerPos[0],
+          towerPos[1] - 1, []);
+        renderers.push(tower);
+        prev = towerPos;
+      });
+      //console.debug(renderers);
+      return renderers;
     }
     
     var wallPath = [
@@ -261,7 +313,7 @@ angular.module('metacastleApp')
       dungeonFunc: towerCornerBuilding,
     };
     
-    makeCastle(aStyle);
+    makeCastle(aStyle, wallPath);
 
     $scope.getCastleTile = function(x, y) {
       return 5;
