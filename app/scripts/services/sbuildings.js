@@ -119,15 +119,19 @@ angular.module('metacastleApp')
     }
     
     // Object-oriented renderer.
-    function BuildingRenderer(func, x, y, args) {
+    function BuildingRenderer(func, x, y, args, style) {
       this.func = func;
       this.x = x;
       this.y = y;
       this.args = args;
+      this.style = style; // optional extra style
     }
     BuildingRenderer.prototype.render = function(style) {
+      if (this.style) {
+        style = this.style;
+      }
       var call_args = [style, this.x, this.y];
-      call_args.push.apply(call_args, this.args);
+        call_args.push.apply(call_args, this.args);
       this.func.apply(this, call_args);
     }
 
@@ -139,12 +143,6 @@ angular.module('metacastleApp')
       }
     }
 
-    function renderBuildings(style, buildings) {
-      buildings.sort(function(bA, bB) {return bA.y < bB.y;});
-      buildings.forEach(function(building) {
-        building.render(style);
-      });
-    }
     function makeCurtainWall(style, path) {
       var renderers = [];
       var prev = path[path.length - 1];
@@ -158,9 +156,17 @@ angular.module('metacastleApp')
       return renderers;
     }
 
-    this.makeCastle = function(style, curtainPath) {
+    function renderBuildings(style, buildings) {
+      buildings.sort(function(bA, bB) {return bA.y < bB.y;});
+      buildings.forEach(function(building) {
+        building.render(style);
+      });
+    }
+
+    this.makeCastle = function(style, curtainPath, dungeonStyle) {
       // Ground
-      sDisplay.fillRect(5, 4, 20, 15, style.groundTile) // Dirt
+      // TODO: get these coordinates from the curtainPath.
+      sDisplay.fillRect(5, 4, 20, 15, style.groundTile)
 
       // Create list of stuff to render:
       //  1) wall
@@ -171,7 +177,8 @@ angular.module('metacastleApp')
         style.entranceDecorators]);
       renderers.push(entranceRenderer)
       // 3) Big-ass dungeon
-      renderers.push(new BuildingRenderer(style.dungeonFunc, 10, 13, [10]));
+      renderers.push(new BuildingRenderer(style.dungeonFunc, 10, 13, [10],
+        dungeonStyle));
 
       // Now render everything
       renderBuildings(style, renderers);

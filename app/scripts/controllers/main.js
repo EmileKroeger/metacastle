@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
-  .controller('MainCtrl', function ($scope, sUtils, sMaterials, sDisplay,
-      sBuildings, sBuildingRenderers, sDecorations, sDecorators) {
+  .controller('MainCtrl', function ($scope, sUtils, sDisplay,
+      sBuildingRenderers, sStyles) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -19,37 +19,10 @@ angular.module('metacastleApp')
       [24, 4],
       [5, 4],
     ];
-
-    var aStyle = {
-      wallMaterial: sMaterials.BLUEWALLS,
-      crenelationMaterial: sMaterials.BLUECRENELATION,
-      platformTile: 9,
-      groundTile: 106, // dirt
-      gate: sDecorations.wideWoodenGate,
-      door: 33,
-      window: 845,
-      trapdoor: 1829,
-      towerHeight: 10,
-      curtainWallHeight: 5,
-      towerFunc: sBuildings.thinTower,
-      tallBanner: sDecorations.tallRedBannerCross,
-      towerDecorators: {
-        facade: sDecorators.highWindowsDecorator,
-        platform: sDecorators.trapdoorDecorator,
-      },
-      entranceDecorators: {
-        facade: sDecorators.fancyGateDecorator,
-        platform: sDecorators.trapdoorDecorator,
-      },
-      dungeonDecorators: {
-        facade: sDecorators.windowedGateDecorator,
-      },
-      //towerFunc: sBuildings.tinyTower,
-      //dungeonFunc: sBuildings.buildingWithHat,
-      dungeonFunc: sBuildings.towerCornerBuilding,
-    };
     
-    sBuildingRenderers.makeCastle(aStyle, wallPath);
+    var dungeonStyle = sStyles.combine(sStyles.dungeonStyle);
+    
+    sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath, dungeonStyle);
 
     $scope.getCastleTile = function(x, y) {
       return 5;

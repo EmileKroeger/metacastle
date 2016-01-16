@@ -146,13 +146,26 @@ angular.module('metacastleApp')
     }
   }
   
+  // Windows
+  this.greySlit = new SingleTile(845);
+  this.greyCrossSlit = new SingleTile(844);
+  this.greyRoundedWindow = new SingleTile(846)
+  this.greyGothicWindow = new SingleTile(846)
+  // Doors
+  this.roundedWoodenDoor = new SingleTile(32);
+  this.roundedWoodenGratedDoor = new SingleTile(33);
+  this.squareSteelDoor = new SingleTile(232);
   this.wideWoodenGate = new WideTile(528);
+  // Banners
   this.tallRedBanner = new HighTile(249, 3);
+  this.tallGreenBanner = new HighTile(849, 3);
   this.tallRedBannerCross = new HighTile(250, 3);
+  // Trapdoors
+  this.blueStairsDown = new SingleTile(1829);
+  
 })
 .service('sDecorators', function (sDisplay) {
 
-  // WIP POC of facade decorator:
   function HighWindowsDecorator() {
   }
   HighWindowsDecorator.prototype.render = function(style, surface) {
@@ -160,7 +173,7 @@ angular.module('metacastleApp')
     var y = surface.y + surface.hei - 2;
     var x_max = surface.x + surface.wid - 2;
     while (x <= x_max) {
-      sDisplay.addTile(x, y, style.window)
+      style.window.render(x, y)
       x += 2;
     }
   };
@@ -170,7 +183,7 @@ angular.module('metacastleApp')
   TrapdoorDecorator.prototype.render = function(style, surface) {
     if (surface.wid > 1) {
       var y = surface.y + Math.floor(surface.hei / 2) - 1;
-      sDisplay.addTile(surface.x + 1, y, style.trapdoor);
+      style.trapdoor.render(surface.x + 1, y);
     }
   };
 
@@ -191,8 +204,8 @@ angular.module('metacastleApp')
       // Parallel banners
       style.tallBanner.render(middleLeft-1, surface.y + 2);
       style.tallBanner.render(middleLeft+2, surface.y + 2);
-      sDisplay.addTile(middleLeft, surface.y + 3, style.window);
-      sDisplay.addTile(middleLeft + 1, surface.y + 3, style.window);
+      style.window.render(middleLeft, surface.y + 3);
+      style.window.render(middleLeft + 1, surface.y + 3);
     }
   }
   function WindowedGateDecorator() {
@@ -201,12 +214,10 @@ angular.module('metacastleApp')
     var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
     style.gate.render(middleLeft, surface.y);
     for (var y=surface.y + 1; y < surface.y + surface.hei; y += 2) {
-      sDisplay.addTile(middleLeft - 1, y, style.window);
-      sDisplay.addTile(middleLeft + 2, y, style.window);
+      style.window.render(middleLeft - 1, y);
+      style.window.render(middleLeft + 2, y);
     }
   }
-  
-
   
   this.highWindowsDecorator = new HighWindowsDecorator();
   this.trapdoorDecorator = new TrapdoorDecorator();
