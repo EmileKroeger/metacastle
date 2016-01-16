@@ -10,13 +10,32 @@
 angular.module('metacastleApp')
   .service('sBuildings', function(sDisplay) {
     var sBuildings = this;
-    this.addBuilding = function(style, x, y, wid, hei, platform) {
+    this.addBuilding = function(style, x, y, wid, hei, platform, decorators) {
       // Wall
       sDisplay.addRect(x, y, wid, hei - 1, style.wallMaterial);
       // Platform tiles
       sDisplay.fillRect(x, y + hei - 1, wid, platform - 1, style.platformTile);
       // Crenelation
       sDisplay.addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
+      // Decorators
+      if (decorators && decorators.facade) {
+        var facade = {
+          x: x,
+          y: y,
+          wid: wid,
+          hei: hei - 1,
+        }
+        decorators.facade.render(style, facade);
+      }
+      if (decorators && decorators.platform) {
+        var facade = {
+          x: x + 1,
+          y: y + hei,
+          wid: wid - 2,
+          hei: platform - 1,
+        }
+        decorators.platform.render(style, facade);
+      }
     }
     
     this.horizontalCurtainWall = function(style, cxl, cy, cxr) {
@@ -51,16 +70,15 @@ angular.module('metacastleApp')
     // Buildings
     this.thinTower = function(style, cx, cy) {
       var hei = style.towerHeight;
-      sBuildings.addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
-      sDisplay.addTile(cx, cy + hei - 2, style.trapdoor)
-      sDisplay.addTile(cx - 1, cy + hei - 5, style.window)
-      sDisplay.addTile(cx + 1, cy + hei - 5, style.window)
+      sBuildings.addBuilding(style, cx - 2, cy - 2, 5, hei, 4, 
+        style.towerDecorators);
     }
 
     this.tinyTower = function(style, cx, cy) {
       var hei = style.towerHeight;
-      sBuildings.addBuilding(style, cx - 1, cy - 1, 3, hei, 3);
-      sDisplay.addTile(cx, cy + hei - 4, style.window)
+      sBuildings.addBuilding(style, cx - 1, cy - 1, 3, hei, 3, 
+        style.towerDecorators);
+      //sDisplay.addTile(cx, cy + hei - 4, style.window)
     }
 
 

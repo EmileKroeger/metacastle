@@ -137,4 +137,31 @@ angular.module('metacastleApp')
   }
   
   this.wideWoodenGate = new WideTile(528);
+})
+.service('sDecorators', function (sDisplay) {
+
+  // WIP POC of facade decorator:
+  function HighWindowsDecorator() {
+  }
+  HighWindowsDecorator.prototype.render = function(style, surface) {
+    var x = surface.x + 1;
+    var y = surface.y + surface.hei - 2;
+    var x_max = surface.x + surface.wid - 2;
+    while (x <= x_max) {
+      sDisplay.addTile(x, y, style.window)
+      x += 2;
+    }
+  };
+
+  function TrapdoorDecorator() {
+  }
+  TrapdoorDecorator.prototype.render = function(style, surface) {
+    if (surface.wid > 1) {
+      sDisplay.addTile(surface.x + 1, surface.y + 0, style.trapdoor);
+    }
+  };
+  
+  this.highWindowsDecorator = new HighWindowsDecorator();
+  this.trapdoorDecorator = new TrapdoorDecorator();
 });
+

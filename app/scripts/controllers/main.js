@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, sUtils, sMaterials, sDisplay,
-      sBuildings, sBuildingRenderers, sDecorations) {
+      sBuildings, sBuildingRenderers, sDecorations, sDecorators) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -25,8 +25,6 @@ angular.module('metacastleApp')
       crenelationMaterial: sMaterials.BLUECRENELATION,
       platformTile: 9,
       groundTile: 106, // dirt
-      gateL: 632,
-      gateR: 633,
       gate: sDecorations.wideWoodenGate,
       door: 33,
       window: 845,
@@ -34,6 +32,10 @@ angular.module('metacastleApp')
       towerHeight: 10,
       curtainWallHeight: 5,
       towerFunc: sBuildings.thinTower,
+      towerDecorators: {
+        facade: sDecorators.highWindowsDecorator,
+        platform: sDecorators.trapdoorDecorator,
+      },
       //towerFunc: sBuildings.tinyTower,
       //dungeonFunc: sBuildings.buildingWithHat,
       dungeonFunc: sBuildings.towerCornerBuilding,
