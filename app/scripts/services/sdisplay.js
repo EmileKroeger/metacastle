@@ -135,8 +135,20 @@ angular.module('metacastleApp')
     sDisplay.addTile(x, y, this.tilecode);
     sDisplay.addTile(x + 1, y, this.tilecode + 1);
   }
+  function HighTile(bottomtilecode, height) {
+    this.bottomtilecode = bottomtilecode;
+    this.height = height;
+  }
+  HighTile.prototype.render = function(x, y) {
+    for (var i = 0; i < this.height; i++) {
+      sDisplay.addTile(x, y + i, this.bottomtilecode - (100 * i));
+      
+    }
+  }
   
   this.wideWoodenGate = new WideTile(528);
+  this.tallRedBanner = new HighTile(249, 3);
+  this.tallRedBannerCross = new HighTile(250, 3);
 })
 .service('sDecorators', function (sDisplay) {
 
@@ -157,11 +169,36 @@ angular.module('metacastleApp')
   }
   TrapdoorDecorator.prototype.render = function(style, surface) {
     if (surface.wid > 1) {
-      sDisplay.addTile(surface.x + 1, surface.y + 0, style.trapdoor);
+      var y = surface.y + Math.floor(surface.hei / 2) - 1;
+      sDisplay.addTile(surface.x + 1, y, style.trapdoor);
     }
   };
+
+  function GateDecorator() {
+  }
+  GateDecorator.prototype.render = function(style, surface) {
+    if (surface.wid > 2) {
+      var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
+      style.gate.render(middleLeft, surface.y);
+    }
+  }
+  function FancyGateDecorator() {
+  }
+  GateDecorator.prototype.render = function(style, surface) {
+    var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
+    if (surface.wid > 2) {
+      style.gate.render(middleLeft, surface.y);
+      // Parallel banners
+      style.tallBanner.render(middleLeft-1, surface.y + 2);
+      style.tallBanner.render(middleLeft+2, surface.y + 2);
+      sDisplay.addTile(middleLeft, surface.y + 3, style.window);
+      sDisplay.addTile(middleLeft + 1, surface.y + 3, style.window);
+    }
+  }
+
   
   this.highWindowsDecorator = new HighWindowsDecorator();
   this.trapdoorDecorator = new TrapdoorDecorator();
+  this.gateDecorator = new GateDecorator();
 });
 

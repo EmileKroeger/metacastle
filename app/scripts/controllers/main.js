@@ -32,8 +32,13 @@ angular.module('metacastleApp')
       towerHeight: 10,
       curtainWallHeight: 5,
       towerFunc: sBuildings.thinTower,
+      tallBanner: sDecorations.tallRedBannerCross,
       towerDecorators: {
         facade: sDecorators.highWindowsDecorator,
+        platform: sDecorators.trapdoorDecorator,
+      },
+      entranceDecorators: {
+        facade: sDecorators.gateDecorator,
         platform: sDecorators.trapdoorDecorator,
       },
       //towerFunc: sBuildings.tinyTower,

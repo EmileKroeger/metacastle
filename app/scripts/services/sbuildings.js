@@ -169,7 +169,8 @@ angular.module('metacastleApp')
       var renderers = makeCurtainWall(style, curtainPath)
 
       // 2) Entrance building
-      var entranceRenderer = new BuildingRenderer(sBuildings.addBuilding, 12, 2, [6, 6, 5]);
+      var entranceRenderer = new BuildingRenderer(sBuildings.addBuilding, 12, 2, [6, 6, 5,
+        style.entranceDecorators]);
       renderers.push(entranceRenderer)
       // 3) Big-ass dungeon
       renderers.push(new BuildingRenderer(style.dungeonFunc, 10, 13, [10]));
