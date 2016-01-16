@@ -22,7 +22,52 @@ angular.module('metacastleApp')
       return style;
     };
   })
-  .service('sMaterials', function () {
+  .service('sDisplay', function () {
+    this.tiles = [];
+
+    this.addTile = function addTile(x, y, tilecode) {
+      this.tiles.push({
+        x: x,
+        y: y,
+        tilecode: tilecode,
+      });
+    }
+
+    this.fillRect = function fillRect(x0, y0, wid, hei, tilecode) {
+      for (var x=x0; x < x0 + wid; x++) {
+        for (var y=y0; y < y0 + hei; y++) {
+          this.addTile(x, y, tilecode);
+        }
+      }
+    }
+    
+    this.addRect = function addRect(x0, y0, wid, hei, kind) {
+      // Fills in a rectangle with a special material.
+      var x1 = x0 + wid - 1;
+      var y1 = y0 + hei - 1;
+      // Left column
+      this.addTile(x0, y0+0, kind.bl);
+      for (var dy = 1; dy < hei - 1; dy++) {
+        this.addTile(x0, y0+dy, kind.ml);
+      }
+      this.addTile(x0, y1, kind.tl);
+      // Middle
+      for (var dx = 1; dx < wid - 1; dx++) {
+        this.addTile(x0+dx, y0+0, kind.bm);
+        for (var dy = 1; dy < hei - 1; dy++) {
+          this.addTile(x0+dx, y0+dy, kind.mm);
+        }
+        this.addTile(x0+dx, y1, kind.tm);
+      }
+      // Right column
+      this.addTile(x1, y0+0, kind.br);
+      for (var dy = 1; dy < hei - 1; dy++) {
+        this.addTile(x1, y0+dy, kind.mr);
+      }
+      this.addTile(x1, y1, kind.tr);
+    }
+  })
+  .service('sMaterials', function (sDisplay) {
     function castlePlatformMaterial(topleft) {
       // Crenelation
       this.tl = topleft + 1901;
@@ -68,7 +113,7 @@ angular.module('metacastleApp')
     //var GREYPLATFORM = new castlePlatformMaterial(1220);
     this.BLUECRENELATION = new castlePlatformMaterial(1227);
   })
-  .controller('MainCtrl', function ($scope, sUtils, sMaterials) {
+  .controller('MainCtrl', function ($scope, sUtils, sMaterials, sDisplay) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -77,56 +122,15 @@ angular.module('metacastleApp')
     $scope.CASTLEWID = 30;
     $scope.CASTLEHEI = 30;
     
-    $scope.tiles = [];
-    function addTile(x, y, tilecode) {
-      $scope.tiles.push({
-        x: x,
-        y: y,
-        tilecode: tilecode,
-      });
-    }
-
-    function fillRect(x0, y0, wid, hei, tilecode) {
-      for (var x=x0; x < x0 + wid; x++) {
-        for (var y=y0; y < y0 + hei; y++) {
-          addTile(x, y, tilecode);
-        }
-      }
-    }
-    
-    function addRect(x0, y0, wid, hei, kind) {
-      // Fills in a rectangle with a special material.
-      var x1 = x0 + wid - 1;
-      var y1 = y0 + hei - 1;
-      // Left column
-      addTile(x0, y0+0, kind.bl);
-      for (var dy = 1; dy < hei - 1; dy++) {
-        addTile(x0, y0+dy, kind.ml);
-      }
-      addTile(x0, y1, kind.tl);
-      // Middle
-      for (var dx = 1; dx < wid - 1; dx++) {
-        addTile(x0+dx, y0+0, kind.bm);
-        for (var dy = 1; dy < hei - 1; dy++) {
-          addTile(x0+dx, y0+dy, kind.mm);
-        }
-        addTile(x0+dx, y1, kind.tm);
-      }
-      // Right column
-      addTile(x1, y0+0, kind.br);
-      for (var dy = 1; dy < hei - 1; dy++) {
-        addTile(x1, y0+dy, kind.mr);
-      }
-      addTile(x1, y1, kind.tr);
-    }
+    $scope.tiles = sDisplay.tiles;
     
     function addBuilding(style, x, y, wid, hei, platform) {
       // Wall
-      addRect(x, y, wid, hei - 1, style.wallMaterial);
+      sDisplay.addRect(x, y, wid, hei - 1, style.wallMaterial);
       // Platform tiles
-      fillRect(x, y + hei - 1, wid, platform - 1, style.platformTile);
+      sDisplay.fillRect(x, y + hei - 1, wid, platform - 1, style.platformTile);
       // Crenelation
-      addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
+      sDisplay.addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
     }
     
     function horizontalCurtainWall(style, cxl, cy, cxr) {
@@ -138,8 +142,8 @@ angular.module('metacastleApp')
       addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
       // Gates
       var middleLeft = Math.floor(0.5 * (cxl + cxr));
-      addTile(middleLeft, cy - 1, style.gateL);
-      addTile(middleLeft + 1, cy - 1, style.gateR);
+      sDisplay.addTile(middleLeft, cy - 1, style.gateL);
+      sDisplay.addTile(middleLeft + 1, cy - 1, style.gateR);
     }
 
     function OLDverticalWall(style, cx, cyb, cyt) {
@@ -150,31 +154,32 @@ angular.module('metacastleApp')
       var y = cyb + style.curtainWallHeight;
       var wid = 3;
       var platform = cyt - cyb - 2;
-      fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
+      sDisplay.fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
       // BlueCrenelation
       //addRect(cx - 1, y, wid, platform, sMaterials.BLUECRENELATION);
       // Left crenelation
+      // TODO: make a primitive to do this
       var crenelationMaterial = style.crenelationMaterial;
-      fillRect(cx - 1, y, 1, platform - 1, crenelationMaterial.ml);
-      addTile(cx - 1, y + platform - 1, crenelationMaterial.tl_cut);
-      fillRect(cx + 1, y, 1, platform - 1, crenelationMaterial.mr);
-      addTile(cx + 1, y + platform - 1, crenelationMaterial.tr_cut);
-      addTile(cx, y + platform - 1, style.door);
+      sDisplay.fillRect(cx - 1, y, 1, platform - 1, crenelationMaterial.ml);
+      sDisplay.addTile(cx - 1, y + platform - 1, crenelationMaterial.tl_cut);
+      sDisplay.fillRect(cx + 1, y, 1, platform - 1, crenelationMaterial.mr);
+      sDisplay.addTile(cx + 1, y + platform - 1, crenelationMaterial.tr_cut);
+      sDisplay.addTile(cx, y + platform - 1, style.door);
     }
 
     // Buildings
     function thinTower(style, cx, cy) {
       var hei = style.towerHeight;
       addBuilding(style, cx - 2, cy - 2, 5, hei, 4);
-      addTile(cx, cy + hei - 2, style.trapdoor)
-      addTile(cx - 1, cy + hei - 5, style.window)
-      addTile(cx + 1, cy + hei - 5, style.window)
+      sDisplay.addTile(cx, cy + hei - 2, style.trapdoor)
+      sDisplay.addTile(cx - 1, cy + hei - 5, style.window)
+      sDisplay.addTile(cx + 1, cy + hei - 5, style.window)
     }
 
     function tinyTower(style, cx, cy) {
       var hei = style.towerHeight;
       addBuilding(style, cx - 1, cy - 1, 3, hei, 3);
-      addTile(cx, cy + hei - 4, style.window)
+      sDisplay.addTile(cx, cy + hei - 4, style.window)
     }
 
 
@@ -182,8 +187,8 @@ angular.module('metacastleApp')
       addBuilding(style, x, y, wid, 8, 7);
       addBuilding(style, x + 3, y + 9, wid - 6, 4, 4);
       var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
-      addTile(middleLeft, y, style.gateL);
-      addTile(middleLeft + 1, y, style.gateR);
+      sDisplay.addTile(middleLeft, y, style.gateL);
+      sDisplay.addTile(middleLeft + 1, y, style.gateR);
     }
     
     function towerCornerBuilding(style, x, y, wid) {
@@ -192,13 +197,13 @@ angular.module('metacastleApp')
       tinyTower(style, x + wid - 1, y);
       // TODO: find a way of factoring this
       var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
-      addTile(middleLeft, y, style.gateL);
-      addTile(middleLeft + 1, y, style.gateR);
+      sDisplay.addTile(middleLeft, y, style.gateL);
+      sDisplay.addTile(middleLeft + 1, y, style.gateR);
     }
 
     function makeCastle(style, curtainPath) {
       // Ground
-      fillRect(5, 4, 20, 15, style.groundTile) // Dirt
+      sDisplay.fillRect(5, 4, 20, 15, style.groundTile) // Dirt
 
       // Create list of stuff to render:
       //  1) wall
@@ -247,12 +252,11 @@ angular.module('metacastleApp')
     }
 
     function TowerRenderer(func, cx, cy) {
-      this.func = func;
       this.x = cx - 2;
       this.y = cy - 2;
-    }
-    TowerRenderer.prototype.render = function(style) {
-      this.func(style, this.x + 2, this.y + 2)
+      this.render = function(style) {
+        func(style, cx, cy);
+      }
     }
 
     function renderBuildings(style, buildings) {
