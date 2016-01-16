@@ -38,8 +38,11 @@ angular.module('metacastleApp')
         platform: sDecorators.trapdoorDecorator,
       },
       entranceDecorators: {
-        facade: sDecorators.gateDecorator,
+        facade: sDecorators.fancyGateDecorator,
         platform: sDecorators.trapdoorDecorator,
+      },
+      dungeonDecorators: {
+        facade: sDecorators.windowedGateDecorator,
       },
       //towerFunc: sBuildings.tinyTower,
       //dungeonFunc: sBuildings.buildingWithHat,

@@ -90,12 +90,10 @@ angular.module('metacastleApp')
     }
     
     this.towerCornerBuilding = function(style, x, y, wid) {
-      sBuildings.addBuilding(style, x, y, wid, 8, 7);
+      sBuildings.addBuilding(style, x, y, wid, 8, 7,
+        style.dungeonDecorators);
       sBuildings.tinyTower(style, x, y);
       sBuildings.tinyTower(style, x + wid - 1, y);
-      // TODO: find a way of factoring this
-      var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
-      style.gate.render(middleLeft, y);
       // TODO: add top towers, more complicated
     }
   })

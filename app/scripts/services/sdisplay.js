@@ -184,7 +184,7 @@ angular.module('metacastleApp')
   }
   function FancyGateDecorator() {
   }
-  GateDecorator.prototype.render = function(style, surface) {
+  FancyGateDecorator.prototype.render = function(style, surface) {
     var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
     if (surface.wid > 2) {
       style.gate.render(middleLeft, surface.y);
@@ -195,10 +195,23 @@ angular.module('metacastleApp')
       sDisplay.addTile(middleLeft + 1, surface.y + 3, style.window);
     }
   }
+  function WindowedGateDecorator() {
+  }
+  WindowedGateDecorator.prototype.render = function(style, surface) {
+    var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
+    style.gate.render(middleLeft, surface.y);
+    for (var y=surface.y + 1; y < surface.y + surface.hei; y += 2) {
+      sDisplay.addTile(middleLeft - 1, y, style.window);
+      sDisplay.addTile(middleLeft + 2, y, style.window);
+    }
+  }
+  
 
   
   this.highWindowsDecorator = new HighWindowsDecorator();
   this.trapdoorDecorator = new TrapdoorDecorator();
   this.gateDecorator = new GateDecorator();
+  this.fancyGateDecorator = new FancyGateDecorator();
+  this.windowedGateDecorator = new WindowedGateDecorator();
 });
 
