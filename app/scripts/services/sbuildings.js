@@ -64,7 +64,7 @@ angular.module('metacastleApp')
       sDisplay.addTile(cx - 1, y + platform - 1, crenelationMaterial.tl_cut);
       sDisplay.fillRect(cx + 1, y, 1, platform - 1, crenelationMaterial.mr);
       sDisplay.addTile(cx + 1, y + platform - 1, crenelationMaterial.tr_cut);
-      sDisplay.addTile(cx, y + platform - 1, style.door);
+      style.door.render(cx, y + platform - 1);
     }
 
     // Buildings

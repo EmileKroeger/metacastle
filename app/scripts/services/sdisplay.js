@@ -78,20 +78,20 @@ angular.module('metacastleApp')
 .service('sMaterials', function (sDisplay) {
   function castlePlatformMaterial(topleft) {
     // Crenelation
-    this.tl = topleft + 1901;
-    this.tm = topleft + 1902;
-    this.tr = topleft + 1903;
+    this.tl = topleft + 2;
+    this.tm = topleft + 3;
+    this.tr = topleft + 4;
     // Alternative top, for crenelation
-    this.tl_cut = topleft + 1904;
-    this.tr_cut = topleft + 1906;
+    this.tl_cut = topleft + 200;
+    this.tr_cut = topleft + 201;
     // edges only
-    this.ml = topleft + 2001;
-    this.mm = topleft + 2002; // empy actually
-    this.mr = topleft + 2003;
+    this.ml = topleft + 102;
+    this.mm = topleft + 103; // empy actually
+    this.mr = topleft + 104;
     // Bottom crenelation
-    this.bl = topleft + 2101;
-    this.bm = topleft + 2102;
-    this.br = topleft + 2103;
+    this.bl = topleft + 202;
+    this.bm = topleft + 203;
+    this.br = topleft + 204;
   }
   // TODO: add "FILL" and "partial fill left/right" methods.
   
@@ -119,7 +119,7 @@ angular.module('metacastleApp')
   this.BLUEWALLS = new castleWallMaterial(1227);
   this.BROWNWALLS = new castleWallMaterial(1234);
   //var GREYPLATFORM = new castlePlatformMaterial(1220);
-  this.BLUECRENELATION = new castlePlatformMaterial(1227);
+  this.BLUECRENELATION = new castlePlatformMaterial(3127);
 })
 .service('sDecorations', function (sDisplay) {
   function SingleTile(tilecode){
@@ -150,12 +150,14 @@ angular.module('metacastleApp')
   this.greySlit = new SingleTile(845);
   this.greyCrossSlit = new SingleTile(844);
   this.greyRoundedWindow = new SingleTile(846)
-  this.greyGothicWindow = new SingleTile(846)
+  this.greyGothicWindow = new SingleTile(847)
   // Doors
   this.roundedWoodenDoor = new SingleTile(32);
   this.roundedWoodenGratedDoor = new SingleTile(33);
   this.squareSteelDoor = new SingleTile(232);
+  this.squareSteelGratedDoor = new SingleTile(233);
   this.wideWoodenGate = new WideTile(528);
+  this.wideSteelSquareGratedGate = new WideTile(638);
   // Banners
   this.tallRedBanner = new HighTile(249, 3);
   this.tallGreenBanner = new HighTile(849, 3);

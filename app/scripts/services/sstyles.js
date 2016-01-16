@@ -9,7 +9,7 @@
  */
 angular.module('metacastleApp')
   .service('sStyles', function(sMaterials, sBuildings, sDecorations, sDecorators) {
-
+    var sStyles = this;
     this.defaultStyle = {
       wallMaterial: sMaterials.BLUEWALLS,
       crenelationMaterial: sMaterials.BLUECRENELATION,
@@ -18,7 +18,7 @@ angular.module('metacastleApp')
       //groundTile: 703, // red flowers
       //groundTile: 1608, // rock
       gate: sDecorations.wideWoodenGate,
-      door: 33,
+      door: sDecorations.roundedWoodenGratedDoor,
       window: sDecorations.greySlit,
       trapdoor: sDecorations.blueStairsDown,
       towerHeight: 10,
@@ -46,8 +46,19 @@ angular.module('metacastleApp')
       window: sDecorations.greyRoundedWindow,
     }
     
+    this.templarWallStyle = {
+      gate: sDecorations.wideSteelSquareGratedGate,
+      door: sDecorations.squareSteelGratedDoor,
+      window: sDecorations.greyCrossSlit,
+      tallBanner: sDecorations.tallRedBannerCross,
+    }
+    this.templarDungeonStyle = {
+      window: sDecorations.greyGothicWindow,
+    }
+    
+    
     this.combine = function() {
-      var style = angular.extend({}, this.defaultStyle);
+      var style = angular.extend({}, sStyles.defaultStyle);
       for (var i = arguments.length - 1; i >= 0; i -= 1) {
         angular.extend(style, arguments[i]);
       }

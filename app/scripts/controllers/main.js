@@ -20,9 +20,17 @@ angular.module('metacastleApp')
       [5, 4],
     ];
     
-    var dungeonStyle = sStyles.combine(sStyles.dungeonStyle);
+    //var dungeonStyle = sStyles.combine(sStyles.dungeonStyle);
+    //sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath, dungeonStyle);
+
+    var templarWallStyle = sStyles.combine(sStyles.templarWallStyle);
+    var templarDungeonStyle = sStyles.combine(sStyles.templarDungeonStyle,
+    sStyles.templarWallStyle);
     
-    sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath, dungeonStyle);
+    console.debug([templarWallStyle.window, sStyles.templarWallStyle.window])
+
+    sBuildingRenderers.makeCastle(templarWallStyle, wallPath, templarDungeonStyle);
+    //sBuildingRenderers.makeCastle(templarWallStyle, wallPath, templarDungeonStyle);
 
     $scope.getCastleTile = function(x, y) {
       return 5;
