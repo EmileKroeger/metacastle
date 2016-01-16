@@ -199,36 +199,18 @@ angular.module('metacastleApp')
     function makeCastle(style, curtainPath) {
       // Ground
       fillRect(5, 4, 20, 15, style.groundTile) // Dirt
-    
-      // Back wall
-      //horizontalCurtainWall(style, 5, 18, 24);
-      // Back towers
-      //style.towerFunc(style, 5, 18);
-      //style.towerFunc(style, 24, 18);
 
-      // Big-ass dungeon
-      style.dungeonFunc(style, 10, 13, 10);
-
+      // Create list of stuff to render:
+      //  1) wall
       var renderers = makeCurtainWall(style, curtainPath)
-      //var renderers = [];
-    
-      // side walls
-      //verticalCurtainWall(style, 5, 4, 18);
-      var vrender = makeCurtainSegmentRenderer([5, 4], [5, 18]); 
-      //renderers = [vrender];
-      verticalCurtainWall(style, 24, 4, 18);
 
-      // Front walls
-      //gatedHorizontalCurtainWall(style, 5, 4, 24);
-      //style.towerFunc(style, 5, 4, 10);
-      //style.towerFunc(style, 24, 4, 10);
-      
-      
-      // Alternative entrance
-      //addBuilding(style, 12, 2, 6, 6, 5);
+      // 2) Entrance building
       var entranceRenderer = new BuildingRenderer(addBuilding, 12, 2, [6, 6, 5]);
       renderers.push(entranceRenderer)
-      //entranceRenderer.render(style);
+      // 3) Big-ass dungeon
+      renderers.push(new BuildingRenderer(style.dungeonFunc, 10, 13, [10]));
+
+      // Now render everything
       renderBuildings(style, renderers);
     }
     
@@ -251,10 +233,9 @@ angular.module('metacastleApp')
       }
     }
     
-    // Let's take a stab at making this object-oriented.
+    // Object-oriented renderer.
     function BuildingRenderer(func, x, y, args) {
       this.func = func;
-      //console.debug(["init", func, x, y, args]);
       this.x = x;
       this.y = y;
       this.args = args;
@@ -264,9 +245,17 @@ angular.module('metacastleApp')
       call_args.push.apply(call_args, this.args);
       this.func.apply(this, call_args);
     }
-    
+
+    function TowerRenderer(func, cx, cy) {
+      this.func = func;
+      this.x = cx - 2;
+      this.y = cy - 2;
+    }
+    TowerRenderer.prototype.render = function(style) {
+      this.func(style, this.x + 2, this.y + 2)
+    }
+
     function renderBuildings(style, buildings) {
-      // TODO: figure out a way of not using the center X
       buildings.sort(function(bA, bB) {return bA.y < bB.y;});
       buildings.forEach(function(building) {
         building.render(style);
@@ -277,12 +266,11 @@ angular.module('metacastleApp')
       var prev = path[path.length - 1];
       path.forEach(function(towerPos) {
         renderers.push(makeCurtainSegmentRenderer(prev, towerPos));
-        var tower = new BuildingRenderer(style.towerFunc, towerPos[0],
-          towerPos[1] - 1, []);
+        var tower = new TowerRenderer(style.towerFunc, towerPos[0],
+          towerPos[1], []);
         renderers.push(tower);
         prev = towerPos;
       });
-      //console.debug(renderers);
       return renderers;
     }
     
@@ -292,8 +280,6 @@ angular.module('metacastleApp')
       [24, 4],
       [5, 4],
     ];
-    
-    //makeCurtainWall(wallPath);
 
     var aStyle = {
       wallMaterial: sMaterials.BLUEWALLS,
