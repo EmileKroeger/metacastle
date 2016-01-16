@@ -121,3 +121,20 @@ angular.module('metacastleApp')
   //var GREYPLATFORM = new castlePlatformMaterial(1220);
   this.BLUECRENELATION = new castlePlatformMaterial(1227);
 })
+.service('sDecorations', function (sDisplay) {
+  function SingleTile(tilecode){
+    this.tilecode = tilecode;
+  }
+  SingleTile.prototype.render = function(x, y) {
+    sDisplay.addTile(x, y, this.tilecode);
+  }
+  function WideTile(tilecode){
+    this.tilecode = tilecode;
+  }
+  WideTile.prototype.render = function(x, y) {
+    sDisplay.addTile(x, y, this.tilecode);
+    sDisplay.addTile(x + 1, y, this.tilecode + 1);
+  }
+  
+  this.wideWoodenGate = new WideTile(528);
+});

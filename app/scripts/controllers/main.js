@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, sUtils, sMaterials, sDisplay,
-      sBuildings, sBuildingRenderers) {
+      sBuildings, sBuildingRenderers, sDecorations) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -27,6 +27,7 @@ angular.module('metacastleApp')
       groundTile: 106, // dirt
       gateL: 632,
       gateR: 633,
+      gate: sDecorations.wideWoodenGate,
       door: 33,
       window: 845,
       trapdoor: 1829,

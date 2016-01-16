@@ -28,8 +28,7 @@ angular.module('metacastleApp')
       sBuildings.addBuilding(style, cxl+2, cy - 1, cxr - cxl-2, hei, 3);
       // Gates
       var middleLeft = Math.floor(0.5 * (cxl + cxr));
-      sDisplay.addTile(middleLeft, cy - 1, style.gateL);
-      sDisplay.addTile(middleLeft + 1, cy - 1, style.gateR);
+      style.gate.render(middleLeft, cy - 1);
     }
 
     this.verticalCurtainWall = function(style, cx, cyb, cyt) {
@@ -69,8 +68,7 @@ angular.module('metacastleApp')
       sBuildings.addBuilding(style, x, y, wid, 8, 7);
       sBuildings.addBuilding(style, x + 3, y + 9, wid - 6, 4, 4);
       var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
-      sDisplay.addTile(middleLeft, y, style.gateL);
-      sDisplay.addTile(middleLeft + 1, y, style.gateR);
+      style.gate.render(middleLeft, y);
     }
     
     this.towerCornerBuilding = function(style, x, y, wid) {
@@ -79,8 +77,7 @@ angular.module('metacastleApp')
       sBuildings.tinyTower(style, x + wid - 1, y);
       // TODO: find a way of factoring this
       var middleLeft = x + Math.floor(wid / 2.0) - 1; // why?
-      sDisplay.addTile(middleLeft, y, style.gateL);
-      sDisplay.addTile(middleLeft + 1, y, style.gateR);
+      style.gate.render(middleLeft, y);
       // TODO: add top towers, more complicated
     }
   })
