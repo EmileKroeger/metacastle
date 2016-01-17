@@ -13,49 +13,77 @@ angular.module('metacastleApp')
     $scope.CASTLEHEI = 30;
     $scope.showTilemap = true;
 
-    var templarWallStyle = sStyles.combine(sStyles.templarWallStyle);
-    var templarDungeonStyle = sStyles.combine(sStyles.templarDungeonStyle,
-    sStyles.templarWallStyle);
-
-    
-    // Now all of this should be parametric:
-    var wallPath = [
-      [5, 18, "tower"],
-      [14, 18, "dungeon"],
-      [24, 18, "tower"],
-      [24, 4, "tower"],
-      [14, 4, "entrance"],
-      [5, 4, "tower"],
-    ];
-    
-    var big_castle = 1;
-    if(big_castle) {
+    var castle_id = 2;
+    if (castle_id == 0) {
+      var wallPath = [
+        [5, 18, "tower"],
+        [14, 18, "dungeon"],
+        [24, 18, "tower"],
+        [24, 4, "tower"],
+        [14, 4, "entrance"],
+        [5, 4, "tower"],
+      ];
+      sBuildingRenderers.makeCastle(sStyles.templarWallStyle, wallPath);
+    } if(castle_id == 1) {
+      // Big awkwardly-shaped castle
       $scope.showTilemap = false;
       $scope.CASTLEWID = 70;
-      $scope.CASTLEHEI = 70;
+      $scope.CASTLEHEI = 45;
       wallPath = [
-        [5, 58, "tower"],
-        [30, 58, "dungeon", templarDungeonStyle],
-        [62, 58, "tower"],
-        [62, 44, "tower"],
-        [43, 44, "tower"],
-        [43, 30, "tower"],
-        [24, 30, "entrance"],
-        [5, 30, "tower"],
-        [5, 44, "tower"],
+        [5, 33, "tower"],
+        [30, 33, "dungeon", sStyles.templarDungeonStyle],
+        [62, 33, "tower"],
+        [62, 19, "tower"],
+        [43, 19, "tower"],
+        [43, 5, "tower"],
+        [24, 5, "entrance"],
+        [5, 5, "tower"],
+        [5, 19, "tower"],
       ];
+      sBuildingRenderers.makeCastle(sStyles.templarWallStyle, wallPath);
+    } else if(castle_id == 2) {
+      // Double castle
+      $scope.showTilemap = false;
+      $scope.CASTLEWID = 70;
+      $scope.CASTLEHEI = 45;
+      var outerPath = [
+        [5, 33, "tower"],
+        [62, 33, "tower"],
+        [62, 19, "tower"],
+        [62, 5, "tower"],
+        [43, 5, "tower"],
+        [24, 5, "entrance"],
+        [5, 5, "tower"],
+        [5, 19, "tower"],
+      ];
+      var innerPath = [
+        [20, 29, "tower"],
+        [34, 29, "dungeon"],
+        [47, 29, "tower"],
+        [47, 13, "tower"],
+        [34, 13, "entrance"],
+        [20, 13, "tower"],
+      ]
+      sBuildingRenderers.makeCastle2(sStyles.lowStyle, outerPath,
+      sStyles.highStyle, innerPath);
     }
-    //sBuildingRenderers.fillPath(wallPath, 9)
-    //console.debug(wallPath);
     
-    //var dungeonStyle = sStyles.combine(sStyles.dungeonStyle);
-    //sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath, dungeonStyle);
+    
+    //sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath);
 
-    
-    sBuildingRenderers.makeCastle(templarWallStyle, wallPath, templarDungeonStyle);
 
     $scope.getCastleTile = function(x, y) {
       return 5;
     }
     $scope.getStyle = sUtils.getStyle;
   });
+
+
+/*
+
+Architectural reflections:
+  * A "building def" should be a function without parameters, that reads
+    whatever extra stuff it wants from the "style"
+ * Extra style should be an "addon", merged if necessary  
+*/
+

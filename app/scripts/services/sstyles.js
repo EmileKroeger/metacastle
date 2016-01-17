@@ -42,9 +42,24 @@ angular.module('metacastleApp')
       dungeonFunc: sBuildings.towerCornerBuilding,
     };
     
+    this.lowStyle = {
+      towerHeight: 5,
+      curtainWallHeight: 3,
+      towerDecorators: {
+        platform: sDecorators.trapdoorDecorator,
+      },
+    };
+    
+    this.highStyle = {
+      towerHeight: 11,
+      curtainWallHeight: 8,
+    }
+    
+    
     this.dungeonStyle = {
       window: sDecorations.greyRoundedWindow,
-    }
+    };
+    
     
     this.templarWallStyle = {
       gate: sDecorations.wideSteelSquareGratedGate,

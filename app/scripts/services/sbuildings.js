@@ -101,9 +101,9 @@ angular.module('metacastleApp')
       // TODO: add top towers, more complicated
     }
   })
-  .service('sBuildingRenderers', function(sBuildings, sDisplay) {
+  .service('sBuildingRenderers', function(sBuildings, sDisplay, sStyles) {
 
-    function makeCurtainSegmentRenderer(posA, posB) {
+    function makeCurtainSegmentRenderer(posA, posB, style) {
       var xA = posA[0];
       var yA = posA[1];
       var xB = posB[0];
@@ -113,12 +113,12 @@ angular.module('metacastleApp')
         // Actually we want the smallest
         var y = Math.min(yA, yB);
         var y2 = Math.max(yA, yB);
-        return new BuildingRenderer(sBuildings.verticalCurtainWall, xA, y, [y2]);
+        return new BuildingRenderer(sBuildings.verticalCurtainWall, xA, y, [y2], style);
       } else if (yA == yB) {
         // Same Y, it's horizontal
         var x = Math.min(xA, xB);
         var x2 = Math.max(xA, xB);
-        return new BuildingRenderer(sBuildings.horizontalCurtainWall, x, yA, [x2]);
+        return new BuildingRenderer(sBuildings.horizontalCurtainWall, x, yA, [x2], style);
       }
     }
     
@@ -139,36 +139,40 @@ angular.module('metacastleApp')
       this.func.apply(this, call_args);
     }
 
-    function TowerRenderer(func, cx, cy) {
+    function TowerRenderer(func, cx, cy, extra, customStyle) {
       this.x = cx - 2;
       this.y = cy - 2;
       this.render = function(style) {
+        if (customStyle) {
+          style = customStyle;
+        }
         func(style, cx, cy);
       }
     }
     
     function makeNodeRenderer(style, nodeType, x, y) {
       if (nodeType == "tower") {
-        return new TowerRenderer(style.towerFunc, x, y, []);
+        return new TowerRenderer(style.towerFunc, x, y, [], style);
       } else if (nodeType == "dungeon") {
         return new BuildingRenderer(style.dungeonFunc, x-4, y-5, [10],
           style);
       } else if (nodeType == "entrance") {
         return new BuildingRenderer(sBuildings.addBuilding, x-2, y-2,
-          [6, 6, 5, style.entranceDecorators]);
+          [6, 6, 5, style.entranceDecorators], style);
       }
-      return new TowerRenderer(style.towerFunc, x, y, []);
+      console.log("ERROR: nodeType not supported: " + nodeType);
+      return new TowerRenderer(style.towerFunc, x, y, [], style);
     }
 
     function makeCurtainWall(style, path) {
       var renderers = [];
       var prev = path[path.length - 1];
       path.forEach(function(node) {
-        renderers.push(makeCurtainSegmentRenderer(prev, node));
+        renderers.push(makeCurtainSegmentRenderer(prev, node, style));
         var nodeStyle = style;
         // Optional fourth parameter is custom style:
         if (node.length > 3) {
-          nodeStyle = node[3];
+          nodeStyle = angular.extend({}, style, node[3])
         }
         renderers.push(makeNodeRenderer(nodeStyle, node[2], node[0],
           node[1]));
@@ -250,6 +254,8 @@ angular.module('metacastleApp')
     }
 
     this.makeCastle = function(style, curtainPath) {
+      // Add default style.
+      style = sStyles.combine(style);
       // Cover Ground
       this.fillPath(curtainPath, style.groundTile);
 
@@ -259,4 +265,26 @@ angular.module('metacastleApp')
       // Now render everything
       renderBuildings(style, renderers);
     }
+
+    this.makeCastle2 = function(style1, path1, style2, path2) {
+      // Add default style.
+      style1 = sStyles.combine(style1);
+      style2 = sStyles.combine(style2);
+      // Cover Ground
+      this.fillPath(path1, style1.groundTile);
+      if (style2.groundTile != style1.groundTile) {
+        this.fillPath(path2, style2.groundTile);
+      }
+
+      // Get things to render
+      var renderers = makeCurtainWall(style1, path1);
+      makeCurtainWall(style2, path2).forEach(function(renderer) {
+        renderers.push(renderer);
+      });
+
+      // Now render everything
+      renderBuildings(style1, renderers);
+      // Dammit I can't customize the style...
+    }
+
   });
