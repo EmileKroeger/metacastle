@@ -12,29 +12,36 @@ angular.module('metacastleApp')
     var sBuildings = this;
     this.addBuilding = function(style, x, y, wid, hei, platform, decorators) {
       // Wall
-      sDisplay.addRect(x, y, wid, hei - 1, style.wallMaterial);
+      var facade = {
+        x: x,
+        y: y,
+        wid: wid,
+        hei: hei - 1,
+      }
+      style.wallMaterial.fillRect(facade)
       // Platform tiles
+      var platformsurface = {
+        x: x,
+        y: y + hei - 1,
+        wid: wid,
+        hei: platform,
+      }
+      
       sDisplay.fillRect(x, y + hei - 1, wid, platform - 1, style.platformTile);
       // Crenelation
-      sDisplay.addRect(x, y + hei - 1, wid, platform, style.crenelationMaterial);
+      style.crenelationMaterial.fillRect(platformsurface)
       // Decorators
       if (decorators && decorators.facade) {
-        var facade = {
-          x: x,
-          y: y,
-          wid: wid,
-          hei: hei - 1,
-        }
         decorators.facade.render(style, facade);
       }
       if (decorators && decorators.platform) {
-        var facade = {
+        var topsurface = {
           x: x + 1,
           y: y + hei,
           wid: wid - 2,
           hei: platform - 1,
         }
-        decorators.platform.render(style, facade);
+        decorators.platform.render(style, topsurface);
       }
     }
     
@@ -55,9 +62,6 @@ angular.module('metacastleApp')
       var wid = 3;
       var platform = cyt - cyb - 2;
       sDisplay.fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
-      // BlueCrenelation
-      //addRect(cx - 1, y, wid, platform, sMaterials.BLUECRENELATION);
-      // Left crenelation
       // TODO: make a primitive to do this
       var crenelationMaterial = style.crenelationMaterial;
       sDisplay.fillRect(cx - 1, y, 1, platform - 1, crenelationMaterial.ml);
@@ -163,10 +167,74 @@ angular.module('metacastleApp')
       });
     }
 
+
+    this.fillPath = function(path, tilecode) {
+      // Helper for tracking who's been filled
+      var filled = {};
+      function fill(poscode) {
+        if (filled[poscode]) {
+          return false;
+        } else {
+          filled[poscode] = true;
+          var x = poscode % 100;
+          var y = Math.floor((poscode - x) / 100);
+
+          sDisplay.addTile(x, y, tilecode);
+          return true;
+        }
+      }
+      // Helper for getting lines
+      function forBetween(a, b, callback) {
+        if (a > b) {
+          var tmp = b;
+          b = a;
+          a = tmp;
+        }
+        for (var n = a; n <= b; n++) {
+          callback(n);
+        }
+      }
+      // First, fill in all the borders
+      //   nb: this could be a good place to use
+      //   special border tiles...
+      var prev = path[path.length - 1];
+      path.forEach(function(point) {
+        var px = prev[0];
+        var py = prev[1];
+        var cx = point[0];
+        var cy = point[1];
+        if (px == cx) {
+          forBetween(py, cy, function(y) {
+            fill(cx + 100 * y);
+          });
+        } else {
+          // py == cy can be assumed
+          forBetween(px, cx, function(x) {
+            fill(x + 100 * py);
+          });
+        }
+        prev = point;
+      });
+      // Now, flood-fill the rest
+      // Lazily assume the first point is top-left
+      var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
+      var border = [firstpoint];
+      while (border.length > 0) {
+        var point = border.pop();
+        if (fill(point)) {
+          // Add all neighbours to border
+          border.push(point - 1);
+          border.push(point + 1);
+          border.push(point - 100);
+          border.push(point + 100);
+        }
+        // else, already filled, do nothing
+      }
+    }
+
     this.makeCastle = function(style, curtainPath, dungeonStyle) {
       // Ground
-      // TODO: get these coordinates from the curtainPath.
-      sDisplay.fillRect(5, 4, 20, 15, style.groundTile)
+      this.fillPath(curtainPath, style.groundTile);
 
       // Create list of stuff to render:
       //  1) wall

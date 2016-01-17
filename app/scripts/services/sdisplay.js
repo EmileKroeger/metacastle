@@ -93,13 +93,13 @@ angular.module('metacastleApp')
     this.bm = topleft + 203;
     this.br = topleft + 204;
   }
+  castlePlatformMaterial.prototype.fillRect = function(surface) {
+    // TODO: better
+    sDisplay.addRect(surface.x, surface.y, surface.wid, surface.hei, this);
+  }
   // TODO: add "FILL" and "partial fill left/right" methods.
   
   function castleWallMaterial(topleft) {
-    // right-biased crenelation
-    //this.tl = topleft + 204;
-    //this.tm = topleft + 205;
-    //this.tr = topleft + 206;
     // Use flat wall on top too
     this.tl = topleft + 304;
     this.tm = topleft + 305;
@@ -112,6 +112,10 @@ angular.module('metacastleApp')
     this.bl = topleft + 301;
     this.bm = topleft + 300;
     this.br = topleft + 303;
+  }
+  castleWallMaterial.prototype.fillRect = function(surface) {
+    // TODO: better
+    sDisplay.addRect(surface.x, surface.y, surface.wid, surface.hei, this);
   }
   
   this.YELLOWWALLS = new castleWallMaterial(1213);
