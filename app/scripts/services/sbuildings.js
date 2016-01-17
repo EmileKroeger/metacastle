@@ -146,16 +146,33 @@ angular.module('metacastleApp')
         func(style, cx, cy);
       }
     }
+    
+    function makeNodeRenderer(style, nodeType, x, y) {
+      if (nodeType == "tower") {
+        return new TowerRenderer(style.towerFunc, x, y, []);
+      } else if (nodeType == "dungeon") {
+        return new BuildingRenderer(style.dungeonFunc, x-4, y-5, [10],
+          style);
+      } else if (nodeType == "entrance") {
+        return new BuildingRenderer(sBuildings.addBuilding, x-2, y-2,
+          [6, 6, 5, style.entranceDecorators]);
+      }
+      return new TowerRenderer(style.towerFunc, x, y, []);
+    }
 
     function makeCurtainWall(style, path) {
       var renderers = [];
       var prev = path[path.length - 1];
-      path.forEach(function(towerPos) {
-        renderers.push(makeCurtainSegmentRenderer(prev, towerPos));
-        var tower = new TowerRenderer(style.towerFunc, towerPos[0],
-          towerPos[1], []);
-        renderers.push(tower);
-        prev = towerPos;
+      path.forEach(function(node) {
+        renderers.push(makeCurtainSegmentRenderer(prev, node));
+        var nodeStyle = style;
+        // Optional fourth parameter is custom style:
+        if (node.length > 3) {
+          nodeStyle = node[3];
+        }
+        renderers.push(makeNodeRenderer(nodeStyle, node[2], node[0],
+          node[1]));
+        prev = node;
       });
       return renderers;
     }
@@ -232,24 +249,14 @@ angular.module('metacastleApp')
       }
     }
 
-    this.makeCastle = function(style, curtainPath, dungeonStyle) {
-      // Ground
+    this.makeCastle = function(style, curtainPath) {
+      // Cover Ground
       this.fillPath(curtainPath, style.groundTile);
 
-      // Create list of stuff to render:
-      //  1) wall
-      var renderers = makeCurtainWall(style, curtainPath)
-
-      // 2) Entrance building
-      var entranceRenderer = new BuildingRenderer(sBuildings.addBuilding, 12, 2, [6, 6, 5,
-        style.entranceDecorators]);
-      renderers.push(entranceRenderer)
-      // 3) Big-ass dungeon
-      renderers.push(new BuildingRenderer(style.dungeonFunc, 10, 13, [10],
-        dungeonStyle));
+      // Get things to render
+      var renderers = makeCurtainWall(style, curtainPath);
 
       // Now render everything
       renderBuildings(style, renderers);
     }
-
   });

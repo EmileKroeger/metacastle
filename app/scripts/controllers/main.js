@@ -12,29 +12,37 @@ angular.module('metacastleApp')
     $scope.CASTLEWID = 30;
     $scope.CASTLEHEI = 30;
     $scope.showTilemap = true;
+
+    var templarWallStyle = sStyles.combine(sStyles.templarWallStyle);
+    var templarDungeonStyle = sStyles.combine(sStyles.templarDungeonStyle,
+    sStyles.templarWallStyle);
+
     
     // Now all of this should be parametric:
     var wallPath = [
-      [5, 18],
-      [24, 18],
-      [24, 4],
-      [5, 4],
+      [5, 18, "tower"],
+      [14, 18, "dungeon"],
+      [24, 18, "tower"],
+      [24, 4, "tower"],
+      [14, 4, "entrance"],
+      [5, 4, "tower"],
     ];
     
-    var big_castle = 0;
+    var big_castle = 1;
     if(big_castle) {
-      $scope.showTilemap = true;
+      $scope.showTilemap = false;
       $scope.CASTLEWID = 70;
       $scope.CASTLEHEI = 70;
       wallPath = [
-        [5, 58],
-        [62, 58],
-        [62, 44],
-        [43, 44],
-        [43, 30],
-        [24, 30],
-        [5, 30],
-        [5, 44],
+        [5, 58, "tower"],
+        [30, 58, "dungeon", templarDungeonStyle],
+        [62, 58, "tower"],
+        [62, 44, "tower"],
+        [43, 44, "tower"],
+        [43, 30, "tower"],
+        [24, 30, "entrance"],
+        [5, 30, "tower"],
+        [5, 44, "tower"],
       ];
     }
     //sBuildingRenderers.fillPath(wallPath, 9)
@@ -43,9 +51,6 @@ angular.module('metacastleApp')
     //var dungeonStyle = sStyles.combine(sStyles.dungeonStyle);
     //sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath, dungeonStyle);
 
-    var templarWallStyle = sStyles.combine(sStyles.templarWallStyle);
-    var templarDungeonStyle = sStyles.combine(sStyles.templarDungeonStyle,
-    sStyles.templarWallStyle);
     
     sBuildingRenderers.makeCastle(templarWallStyle, wallPath, templarDungeonStyle);
 
