@@ -62,12 +62,8 @@ angular.module('metacastleApp')
       var wid = 3;
       var platform = cyt - cyb - 2;
       sDisplay.fillRect(cx - 1, y, wid, platform - 1, style.platformTile);
-      // TODO: make a primitive to do this
-      var crenelationMaterial = style.crenelationMaterial;
-      sDisplay.fillRect(cx - 1, y, 1, platform - 1, crenelationMaterial.ml);
-      sDisplay.addTile(cx - 1, y + platform - 1, crenelationMaterial.tl_cut);
-      sDisplay.fillRect(cx + 1, y, 1, platform - 1, crenelationMaterial.mr);
-      sDisplay.addTile(cx + 1, y + platform - 1, crenelationMaterial.tr_cut);
+      style.crenelationMaterial.makeLeftEdge(cx - 1, y, platform - 1);
+      style.crenelationMaterial.makeRightEdge(cx + 1, y, platform - 1);
       style.door.render(cx, y + platform - 1);
     }
 
@@ -102,7 +98,7 @@ angular.module('metacastleApp')
     }
   })
   .service('sBuildingRenderers', function(sBuildings, sDisplay, sStyles) {
-
+    var sBuildingRenderers = this;
     function makeCurtainSegmentRenderer(posA, posB, style) {
       var xA = posA[0];
       var yA = posA[1];
@@ -252,39 +248,24 @@ angular.module('metacastleApp')
         // else, already filled, do nothing
       }
     }
-
-    this.makeCastle = function(style, curtainPath) {
-      // Add default style.
-      style = sStyles.combine(style);
-      // Cover Ground
-      this.fillPath(curtainPath, style.groundTile);
-
-      // Get things to render
-      var renderers = makeCurtainWall(style, curtainPath);
-
-      // Now render everything
-      renderBuildings(style, renderers);
-    }
-
-    this.makeCastle2 = function(style1, path1, style2, path2) {
-      // Add default style.
-      style1 = sStyles.combine(style1);
-      style2 = sStyles.combine(style2);
-      // Cover Ground
-      this.fillPath(path1, style1.groundTile);
-      if (style2.groundTile != style1.groundTile) {
-        this.fillPath(path2, style2.groundTile);
+    
+    // Scene object
+    function Scene(style) {
+      if (!style) {
+        style = {};
       }
-
-      // Get things to render
-      var renderers = makeCurtainWall(style1, path1);
-      makeCurtainWall(style2, path2).forEach(function(renderer) {
-        renderers.push(renderer);
-      });
-
-      // Now render everything
-      renderBuildings(style1, renderers);
-      // Dammit I can't customize the style...
+      this.style = sStyles.combine(style);
+      this.renderers = [];
     }
-
+    Scene.prototype.addWall = function(path, style) {
+      var style = sStyles.combine(style, this.style);
+      sBuildingRenderers.fillPath(path, style.groundTile);
+      this.renderers.push.apply(this.renderers, makeCurtainWall(style, path));
+    }
+    Scene.prototype.render = function() {
+      // TODO: move all that function in here for simplicity's sake
+      renderBuildings(this.style, this.renderers);
+    }
+    this.Scene = Scene;
+    
   });

@@ -13,7 +13,9 @@ angular.module('metacastleApp')
     $scope.CASTLEHEI = 30;
     $scope.showTilemap = true;
 
-    var castle_id = 2;
+    var scene = new sBuildingRenderers.Scene();
+
+    var castle_id = 0;
     if (castle_id == 0) {
       var wallPath = [
         [5, 18, "tower"],
@@ -23,7 +25,7 @@ angular.module('metacastleApp')
         [14, 4, "entrance"],
         [5, 4, "tower"],
       ];
-      sBuildingRenderers.makeCastle(sStyles.templarWallStyle, wallPath);
+      scene.addWall(wallPath, sStyles.templarWallStyle);
     } if(castle_id == 1) {
       // Big awkwardly-shaped castle
       $scope.showTilemap = false;
@@ -40,7 +42,7 @@ angular.module('metacastleApp')
         [5, 5, "tower"],
         [5, 19, "tower"],
       ];
-      sBuildingRenderers.makeCastle(sStyles.templarWallStyle, wallPath);
+      scene.addWall(wallPath, sStyles.templarWallStyle);
     } else if(castle_id == 2) {
       // Double castle
       $scope.showTilemap = false;
@@ -64,13 +66,11 @@ angular.module('metacastleApp')
         [34, 13, "entrance"],
         [20, 13, "tower"],
       ]
-      sBuildingRenderers.makeCastle2(sStyles.lowStyle, outerPath,
-      sStyles.highStyle, innerPath);
+      scene.addWall(outerPath, sStyles.lowStyle);
+      scene.addWall(innerPath, sStyles.highStyle);
     }
     
-    
-    //sBuildingRenderers.makeCastle(sStyles.defaultStyle, wallPath);
-
+    scene.render();
 
     $scope.getCastleTile = function(x, y) {
       return 5;
@@ -80,6 +80,15 @@ angular.module('metacastleApp')
 
 
 /*
+Next actions:
+ * Add a way of "decorating the inside" of a courtyard with junk like
+   trees or bushes or flowers
+ * Mpve the rectangle-filling logic into methods on a material object
+ * (then) enable materials to color weird shapes
+ * Directly pass sBuildings.tower etc. as parameter on the declaration.
+
+Done:  
+ * Refactor the "make castle" stuff so that you can pass arbitrary paths.
 
 Architectural reflections:
   * A "building def" should be a function without parameters, that reads

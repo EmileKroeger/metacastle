@@ -49,33 +49,35 @@ angular.module('metacastleApp')
     }
   }
   
-  this.addRect = function addRect(x0, y0, wid, hei, kind) {
+})
+.service('sMaterials', function (sDisplay) {
+  // Helper function, only for materials of a certain kind.
+  function addRect(x0, y0, wid, hei, mat) {
     // Fills in a rectangle with a special material.
     var x1 = x0 + wid - 1;
     var y1 = y0 + hei - 1;
     // Left column
-    this.addTile(x0, y0+0, kind.bl);
+    sDisplay.addTile(x0, y0+0, mat.bl);
     for (var dy = 1; dy < hei - 1; dy++) {
-      this.addTile(x0, y0+dy, kind.ml);
+      sDisplay.addTile(x0, y0+dy, mat.ml);
     }
-    this.addTile(x0, y1, kind.tl);
+    sDisplay.addTile(x0, y1, mat.tl);
     // Middle
     for (var dx = 1; dx < wid - 1; dx++) {
-      this.addTile(x0+dx, y0+0, kind.bm);
+      sDisplay.addTile(x0+dx, y0+0, mat.bm);
       for (var dy = 1; dy < hei - 1; dy++) {
-        this.addTile(x0+dx, y0+dy, kind.mm);
+        sDisplay.addTile(x0+dx, y0+dy, mat.mm);
       }
-      this.addTile(x0+dx, y1, kind.tm);
+      sDisplay.addTile(x0+dx, y1, mat.tm);
     }
     // Right column
-    this.addTile(x1, y0+0, kind.br);
+    sDisplay.addTile(x1, y0+0, mat.br);
     for (var dy = 1; dy < hei - 1; dy++) {
-      this.addTile(x1, y0+dy, kind.mr);
+      sDisplay.addTile(x1, y0+dy, mat.mr);
     }
-    this.addTile(x1, y1, kind.tr);
+    sDisplay.addTile(x1, y1, mat.tr);
   }
-})
-.service('sMaterials', function (sDisplay) {
+
   function castlePlatformMaterial(topleft) {
     // Crenelation
     this.tl = topleft + 2;
@@ -95,8 +97,17 @@ angular.module('metacastleApp')
   }
   castlePlatformMaterial.prototype.fillRect = function(surface) {
     // TODO: better
-    sDisplay.addRect(surface.x, surface.y, surface.wid, surface.hei, this);
+    addRect(surface.x, surface.y, surface.wid, surface.hei, this);
   }
+  castlePlatformMaterial.prototype.makeLeftEdge = function(x, y, hei) {
+    sDisplay.fillRect(x, y, 1, hei, this.ml);
+    sDisplay.addTile(x, y + hei, this.tl_cut);
+  }
+  castlePlatformMaterial.prototype.makeRightEdge = function(x, y, hei) {
+    sDisplay.fillRect(x, y, 1, hei, this.mr);
+    sDisplay.addTile(x, y + hei, this.tr_cut);
+  }
+  
   // TODO: add "FILL" and "partial fill left/right" methods.
   
   function castleWallMaterial(topleft) {
@@ -115,7 +126,7 @@ angular.module('metacastleApp')
   }
   castleWallMaterial.prototype.fillRect = function(surface) {
     // TODO: better
-    sDisplay.addRect(surface.x, surface.y, surface.wid, surface.hei, this);
+    addRect(surface.x, surface.y, surface.wid, surface.hei, this);
   }
   
   this.YELLOWWALLS = new castleWallMaterial(1213);
