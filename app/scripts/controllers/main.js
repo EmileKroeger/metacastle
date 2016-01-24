@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, sUtils, sDisplay,
-      sBuildingRenderers, sStyles, sMaterials) {
+      sBuildings, sBuildingRenderers, sStyles, sMaterials) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -15,19 +15,19 @@ angular.module('metacastleApp')
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 0;
+    var castle_id = 2;
     // 0: small with palette
     // 1: big weird shape
     // 2: souble wall
     // 3: experiments with fill
     if (castle_id == 0) {
       var wallPath = [
-        [5, 18, "tower"],
-        [14, 18, "dungeon"],
-        [24, 18, "tower"],
-        [24, 4, "tower"],
-        [14, 4, "entrance"],
-        [5, 4, "tower"],
+        [5,  18, sBuildings.ThinTower],
+        [14, 18, sBuildings.TowerCornerBuilding],
+        [24, 18, sBuildings.ThinTower],
+        [24, 4,  sBuildings.ThinTower],
+        [14, 4,  sBuildings.Entrance],
+        [5,  4,  sBuildings.ThinTower],
       ];
       scene.addWall(wallPath, sStyles.templarWallStyle);
     } if(castle_id == 1) {
@@ -36,15 +36,15 @@ angular.module('metacastleApp')
       $scope.CASTLEWID = 70;
       $scope.CASTLEHEI = 45;
       wallPath = [
-        [5, 33, "tower"],
-        [30, 33, "dungeon", sStyles.templarDungeonStyle],
-        [62, 33, "tower"],
-        [62, 19, "tower"],
-        [43, 19, "tower"],
-        [43, 5, "tower"],
-        [24, 5, "entrance"],
-        [5, 5, "tower"],
-        [5, 19, "tower"],
+        [5,  33, sBuildings.ThinTower],
+        [30, 33, sBuildings.TowerCornerBuilding, sStyles.templarDungeonStyle],
+        [62, 33, sBuildings.ThinTower],
+        [62, 19, sBuildings.ThinTower],
+        [43, 19, sBuildings.ThinTower],
+        [43, 5,  sBuildings.ThinTower],
+        [24, 5,  sBuildings.Entrance],
+        [5,  5,  sBuildings.ThinTower],
+        [5,  19, sBuildings.ThinTower],
       ];
       scene.addWall(wallPath, sStyles.templarWallStyle);
     } else if(castle_id == 2) {
@@ -53,22 +53,22 @@ angular.module('metacastleApp')
       $scope.CASTLEWID = 70;
       $scope.CASTLEHEI = 45;
       var outerPath = [
-        [5, 33, "tower"],
-        [62, 33, "tower"],
-        [62, 19, "tower"],
-        [62, 5, "tower"],
-        [43, 5, "tower"],
-        [24, 5, "entrance"],
-        [5, 5, "tower"],
-        [5, 19, "tower"],
+        [5,  33, sBuildings.ThinTower],
+        [62, 33, sBuildings.ThinTower],
+        [62, 19, sBuildings.ThinTower],
+        [62, 5,  sBuildings.ThinTower],
+        [43, 5,  sBuildings.ThinTower],
+        [24, 5,  sBuildings.Entrance],
+        [5,  5,  sBuildings.ThinTower],
+        [5,  19, sBuildings.ThinTower],
       ];
       var innerPath = [
-        [20, 29, "tower"],
-        [34, 29, "dungeon"],
-        [47, 29, "tower"],
-        [47, 13, "tower"],
-        [34, 13, "entrance"],
-        [20, 13, "tower"],
+        [20, 29, sBuildings.ThinTower],
+        [34, 29, sBuildings.TowerCornerBuilding],
+        [47, 29, sBuildings.ThinTower],
+        [47, 13, sBuildings.ThinTower],
+        [34, 13, sBuildings.Entrance],
+        [20, 13, sBuildings.ThinTower],
       ]
       scene.addWall(outerPath, sStyles.lowStyle);
       scene.addWall(innerPath, sStyles.highStyle);
@@ -77,18 +77,18 @@ angular.module('metacastleApp')
       $scope.CASTLEWID = 70;
       $scope.CASTLEHEI = 45;
       wallPath = [
-        [5, 33, "tower"],
-        [30, 33, "dungeon"],
-        [30, 43, "dungeon"],
-        [45, 43, "dungeon"],
-        [45, 33, "dungeon"],
-        [62, 33, "tower"],
-        [62, 19, "tower"],
-        [43, 19, "tower"],
-        [43, 5, "tower"],
-        [24, 5, "entrance"],
-        [5, 5, "tower"],
-        [5, 19, "tower"],
+        [5,  33],
+        [30, 33],
+        [30, 43],
+        [45, 43],
+        [45, 33],
+        [62, 33],
+        [62, 19],
+        [43, 19],
+        [43, 5],
+        [24, 5],
+        [5,  5],
+        [5,  19],
       ];
       // Test: 
       scene.fillPath(wallPath, sMaterials.WATER_DIRT);
