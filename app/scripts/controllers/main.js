@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, sUtils, sDisplay,
-      sBuildingRenderers, sStyles) {
+      sBuildingRenderers, sStyles, sMaterials) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -84,7 +84,7 @@ angular.module('metacastleApp')
         [5, 19, "tower"],
       ];
       // Test: 
-      scene.addPath(wallPath, sStyles.defaultStyle.crenelationMaterial);
+      scene.addPath(wallPath, sMaterials.WATER_DIRT);
     }
     
     scene.render();

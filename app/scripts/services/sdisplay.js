@@ -72,29 +72,46 @@ angular.module('metacastleApp')
       }
     }
   }
-  var ANGLE_TO_TILE = {
-    "uu": "ml",
-    "ur": "tl",
-    "ul": "in_tr",
-    "dd": "mr",
-    "dr": "in_bl",
-    "dl": "br",
-    "rr": "tm",
-    "ru": "in_br",
-    "rd": "tr",
-    "ll": "bm",
-    "lu": "bl",
-    "ld": "in_tl",
-  }
-  // Helper for figuring out tile codess
-  this.getPointCode = function(path, index) {
+
+  this.getAngleCode = function(path, index) {
+    // Returns ul for "up-then-left angle", etc.
     var prev = sUtils.modGet(path, index -1);
     var cur = sUtils.modGet(path, index);
     var next = sUtils.modGet(path, index + 1);
-    var angleCode = getDirectionCode(prev, cur) +
-        getDirectionCode(cur, next);
-        return ANGLE_TO_TILE[angleCode];
+    return getDirectionCode(prev, cur) + getDirectionCode(cur, next);
   };
+  
+  this.forEdgeTiles = function(path, callback) {
+    // Iterate over all tiles on given path
+    path.forEach(function(point, i) {
+      var cx = point[0];
+      var cy = point[1];
+      // Handle corner
+      callback(cx, cy, sUtils.getAngleCode(path, i));
+      // Handle all points between prev and this
+      var prev = sUtils.modGet(path, i - 1);
+      var px = prev[0];
+      var py = prev[1];
+      if (px == cx) {
+        var angleCode = "dd";
+        if (py < cy) {
+          var angleCode = "uu";
+        }
+        sUtils.forInside(py, cy, function(y) {
+          callback(cx, y, angleCode);
+        });
+      } else {
+        // py == cy can be assumed
+        var angleCode = "ll";
+        if (px < cx) {
+          var angleCode = "rr";
+        }
+        sUtils.forInside(px, cx, function(x) {
+          callback(x, cy, angleCode);
+        });
+      }
+    });
+  }
 })
 .service('sDisplay', function () {
   this.tiles = [];
@@ -143,8 +160,25 @@ angular.module('metacastleApp')
     }
     sDisplay.addTile(x1, y1, mat.tr);
   }
+  
+  // Helper table
+  var ANGLECODE_TO_TILEPOS = {
+    "uu": "ml",
+    "ur": "tl",
+    "ul": "in_tr",
+    "dd": "mr",
+    "dr": "in_bl",
+    "dl": "br",
+    "rr": "tm",
+    "ru": "in_br",
+    "rd": "tr",
+    "ll": "bm",
+    "lu": "bl",
+    "ld": "in_tl",
+  };
+  
 
-  function castlePlatformMaterial(topleft) {
+  function EdgedMaterial(topleft, inside_offset) {
     // Crenelation
     this.tl = topleft + 2;
     this.tm = topleft + 3;
@@ -161,78 +195,32 @@ angular.module('metacastleApp')
     this.bm = topleft + 203;
     this.br = topleft + 204;
     // Inside angles
-    this.in_tl = topleft;
-    this.in_tr = topleft + 1;
-    this.in_bl = topleft + 100;
-    this.in_br = topleft + 101;
+    if (!inside_offset) {
+      inside_offset = 0;
+    }
+    this.in_tl = topleft + inside_offset;
+    this.in_tr = topleft + inside_offset + 1;
+    this.in_bl = topleft + inside_offset + 100;
+    this.in_br = topleft + inside_offset + 101;
   }
-  castlePlatformMaterial.prototype.fillRect = function(surface) {
+  EdgedMaterial.prototype.fillRect = function(surface) {
     // TODO: better
     addRect(surface.x, surface.y, surface.wid, surface.hei, this);
   }
-  castlePlatformMaterial.prototype.makeLeftEdge = function(x, y, hei) {
+  EdgedMaterial.prototype.makeLeftEdge = function(x, y, hei) {
     sDisplay.fillRect(x, y, 1, hei, this.ml);
     sDisplay.addTile(x, y + hei, this.tl_cut);
   }
-  castlePlatformMaterial.prototype.makeRightEdge = function(x, y, hei) {
+  EdgedMaterial.prototype.makeRightEdge = function(x, y, hei) {
     sDisplay.fillRect(x, y, 1, hei, this.mr);
     sDisplay.addTile(x, y + hei, this.tr_cut);
   }
-  castlePlatformMaterial.prototype.drawEdge = function(path) {
-    // Helper for tracking who's been filled
+  EdgedMaterial.prototype.drawEdge = function(path) {
     var self = this;
-    var filled = {};
-    function fill(poscode) {
-      if (filled[poscode]) {
-        return false;
-      } else {
-        filled[poscode] = true;
-        var x = poscode % 100;
-        var y = Math.floor((poscode - x) / 100);
-
-        sDisplay.addTile(x, y, self.mr);
-        return true;
-      }
-    }
-    
-    // Now iterate on the borders
-    var prev = path[path.length - 1];
-    path.forEach(function(point, i) {
-      
-      var px = prev[0];
-      var py = prev[1];
-      var cx = point[0];
-      var cy = point[1];
-      var angleTileCode = sUtils.getPointCode(path, i);
-      sDisplay.addTile(cx, cy, self[angleTileCode]);
-
-      if (px == cx) {
-        var edgeCode = self.mr;
-        if (py < cy) {
-          var edgeCode = self.ml;
-        }
-        sUtils.forInside(py, cy, function(y) {
-          // TODO: get an extra parameter here
-          sDisplay.addTile(cx, y, edgeCode);
-          
-        });
-      } else {
-        // py == cy can be assumed
-        var edgeCode = self.bm;
-        if (px < cx) {
-          var edgeCode = self.tm;
-        }
-        sUtils.forInside(px, cx, function(x) {
-          sDisplay.addTile(x, cy, edgeCode);
-        });
-      }
-      prev = point;
+    sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+      sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
-  
-
-  
-  // TODO: add "FILL" and "partial fill left/right" methods.
   
   function castleWallMaterial(topleft) {
     // Use flat wall on top too
@@ -258,7 +246,19 @@ angular.module('metacastleApp')
   this.BLUEWALLS = new castleWallMaterial(1227);
   this.BROWNWALLS = new castleWallMaterial(1234);
   //var GREYPLATFORM = new castlePlatformMaterial(1220);
-  this.BLUECRENELATION = new castlePlatformMaterial(3127);
+  this.BLUECRENELATION = new EdgedMaterial(3127);
+  this.WATER_DIRT = new EdgedMaterial(0, 100);
+  this.WATER_STONE = new EdgedMaterial(300);
+  this.REDFLOWERS = new EdgedMaterial(600);
+  this.WHITEFLOWERS = new EdgedMaterial(900);
+  this.BLUEFLOWERS = new EdgedMaterial(1200);
+  this.GRASS = new EdgedMaterial(1500);
+  this.DIRT = new EdgedMaterial(905);
+  this.STONE = new EdgedMaterial(1505);
+  this.SAND = new EdgedMaterial(2105);
+  
+  // TODO: some fancy materials that actually display random tiles.
+  // We have those for dirt, water, sand, walls...
 })
 .service('sDecorations', function (sDisplay) {
   function SingleTile(tilecode){
