@@ -36,6 +36,8 @@ angular.module('metacastleApp')
       },
       dungeonDecorators: {
         facade: sDecorators.windowedGateDecorator,
+        // experimental:
+        platform: sDecorators.workDecorator,
       },
       //towerFunc: sBuildings.tinyTower,
       //dungeonFunc: sBuildings.buildingWithHat,

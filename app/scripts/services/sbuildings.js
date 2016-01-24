@@ -39,12 +39,12 @@ angular.module('metacastleApp')
           x: x + 1,
           y: y + hei,
           wid: wid - 2,
-          hei: platform - 1,
+          hei: platform - 2,
         }
         decorators.platform.render(style, topsurface);
       }
     }
-
+    
     // Buildings - old-style
     
     // can be replaced with class? (but used as corner tower)

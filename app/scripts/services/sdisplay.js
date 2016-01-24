@@ -378,8 +378,24 @@ angular.module('metacastleApp')
   // Trapdoors
   this.blueStairsDown = new SingleTile(1829);
   
+  // Misc. Items
+  this.anvil = new SingleTile(15);
+  this.sign = new SingleTile(19);
+  this.woodbarrel = new SingleTile(22);
+  this.bandedbarrel = new SingleTile(23);
+  this.woodbarrel_open = new SingleTile(25);
+  this.bandedbarrel_open = new SingleTile(26);
+  this.stump1 = new SingleTile(2053);
+  this.stump2 = new SingleTile(1953);
+  this.stump_axe = new SingleTile(2153);
+  this.woodpile = new SingleTile(2253);
+  
+  this.workItems = [
+    this.anvil, this.sign, this.woodbarrel, this.bandedbarrel,
+    this.woodbarrel_open, this.bandedbarrel_open, this.woodpile,
+  ]
 })
-.service('sDecorators', function (sDisplay) {
+.service('sDecorators', function (sDisplay, sDecorations, sUtils) {
 
   function HighWindowsDecorator() {
   }
@@ -434,10 +450,27 @@ angular.module('metacastleApp')
     }
   }
   
+  function StuffDecorator(empties, decorations) {
+    this.total = empties + decorations.length;
+    this.decorations = decorations;
+  }
+  StuffDecorator.prototype.render = function(style, surface) {
+    for(var x=surface.x; x < surface.x + surface.wid; x++) {
+      for(var y=surface.y; y < surface.y + surface.hei; y++) {
+        var i = sUtils.mod(x + 2 * y + 3 * (x * y), this.total);
+        if (i < this.decorations.length) {
+          this.decorations[i].render(x, y);
+        }
+      }
+    }
+  }
+  
   this.highWindowsDecorator = new HighWindowsDecorator();
   this.trapdoorDecorator = new TrapdoorDecorator();
   this.gateDecorator = new GateDecorator();
   this.fancyGateDecorator = new FancyGateDecorator();
   this.windowedGateDecorator = new WindowedGateDecorator();
+  
+  this.workDecorator = new StuffDecorator(10, sDecorations.workItems);
 });
 
