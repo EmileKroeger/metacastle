@@ -202,6 +202,7 @@ angular.module('metacastleApp')
       }
       // Helper for getting lines
       function forBetween(a, b, callback) {
+        // TODO: callback with an extra parameter...
         if (a > b) {
           var tmp = b;
           b = a;
@@ -222,6 +223,7 @@ angular.module('metacastleApp')
         var cy = point[1];
         if (px == cx) {
           forBetween(py, cy, function(y) {
+            // TODO: get an extra parameter here
             fill(cx + 100 * y);
           });
         } else {
@@ -266,6 +268,11 @@ angular.module('metacastleApp')
       // TODO: move all that function in here for simplicity's sake
       renderBuildings(this.style, this.renderers);
     }
+    Scene.prototype.addPath = function(path, material) {
+      // TODO
+      material.drawEdge(path);
+    }
+    
     this.Scene = Scene;
     
   });

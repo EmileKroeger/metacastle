@@ -9,6 +9,7 @@
  */
 angular.module('metacastleApp')
 .service('sUtils', function () {
+  var sUtils = this;
   this.range = function(count) {
       return Array.apply(0, Array(count))
                   .map(function (element, index) { 
@@ -28,6 +29,71 @@ angular.module('metacastleApp')
       "background-position": self.tilePos(tilecode),
     };
     return style;
+  };
+  this.mod = function(n, m) {
+    // Fix Javascript's broken modulo.
+    return ((n % m) + m) % m;
+  };
+  this.modGet = function(array, index) {
+    // Get in a "circular array" (i.e. get with modulo, python-style))
+    return array[this.mod(index, array.length)];
+  };
+  // Geometry utils
+  // Helper for getting lines
+  this.forInside = function(a, b, callback) {
+    // Helper, returns all values strictly between a and b.
+    if (a > b) {
+      var tmp = b;
+      b = a;
+      a = tmp;
+    }
+    for (var n = a + 1; n < b; n++) {
+      callback(n);
+    }
+  }
+  function getDirectionCode(ptA, ptB) {
+    // returns u, d, l or r for up, down, left, right
+    // Assume same column or same row
+    var xA = ptA[0];
+    var yA = ptA[1];
+    var xB = ptB[0];
+    var yB = ptB[1];
+    if (xA == xB) {
+      if (yA < yB) {
+        return "u";
+      } else {
+        return "d";
+      }
+    } else {
+      if (xA < xB) {
+        return "r";
+      } else {
+        return "l";
+      }
+    }
+  }
+  var ANGLE_TO_TILE = {
+    "uu": "ml",
+    "ur": "tl",
+    "ul": "in_tr",
+    "dd": "mr",
+    "dr": "in_bl",
+    "dl": "br",
+    "rr": "tm",
+    "ru": "in_br",
+    "rd": "tr",
+    "ll": "bm",
+    "lu": "bl",
+    "ld": "in_tl",
+  }
+  // Helper for figuring out tile codess
+  this.getPointCode = function(path, index) {
+    var prev = sUtils.modGet(path, index -1);
+    var cur = sUtils.modGet(path, index);
+    var next = sUtils.modGet(path, index + 1);
+    var angleCode = getDirectionCode(prev, cur) +
+        getDirectionCode(cur, next);
+        return ANGLE_TO_TILE[angleCode];
   };
 })
 .service('sDisplay', function () {
@@ -50,7 +116,7 @@ angular.module('metacastleApp')
   }
   
 })
-.service('sMaterials', function (sDisplay) {
+.service('sMaterials', function (sDisplay, sUtils) {
   // Helper function, only for materials of a certain kind.
   function addRect(x0, y0, wid, hei, mat) {
     // Fills in a rectangle with a special material.
@@ -94,6 +160,11 @@ angular.module('metacastleApp')
     this.bl = topleft + 202;
     this.bm = topleft + 203;
     this.br = topleft + 204;
+    // Inside angles
+    this.in_tl = topleft;
+    this.in_tr = topleft + 1;
+    this.in_bl = topleft + 100;
+    this.in_br = topleft + 101;
   }
   castlePlatformMaterial.prototype.fillRect = function(surface) {
     // TODO: better
@@ -107,6 +178,59 @@ angular.module('metacastleApp')
     sDisplay.fillRect(x, y, 1, hei, this.mr);
     sDisplay.addTile(x, y + hei, this.tr_cut);
   }
+  castlePlatformMaterial.prototype.drawEdge = function(path) {
+    // Helper for tracking who's been filled
+    var self = this;
+    var filled = {};
+    function fill(poscode) {
+      if (filled[poscode]) {
+        return false;
+      } else {
+        filled[poscode] = true;
+        var x = poscode % 100;
+        var y = Math.floor((poscode - x) / 100);
+
+        sDisplay.addTile(x, y, self.mr);
+        return true;
+      }
+    }
+    
+    // Now iterate on the borders
+    var prev = path[path.length - 1];
+    path.forEach(function(point, i) {
+      
+      var px = prev[0];
+      var py = prev[1];
+      var cx = point[0];
+      var cy = point[1];
+      var angleTileCode = sUtils.getPointCode(path, i);
+      sDisplay.addTile(cx, cy, self[angleTileCode]);
+
+      if (px == cx) {
+        var edgeCode = self.mr;
+        if (py < cy) {
+          var edgeCode = self.ml;
+        }
+        sUtils.forInside(py, cy, function(y) {
+          // TODO: get an extra parameter here
+          sDisplay.addTile(cx, y, edgeCode);
+          
+        });
+      } else {
+        // py == cy can be assumed
+        var edgeCode = self.bm;
+        if (px < cx) {
+          var edgeCode = self.tm;
+        }
+        sUtils.forInside(px, cx, function(x) {
+          sDisplay.addTile(x, cy, edgeCode);
+        });
+      }
+      prev = point;
+    });
+  };
+  
+
   
   // TODO: add "FILL" and "partial fill left/right" methods.
   

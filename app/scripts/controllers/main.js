@@ -15,7 +15,7 @@ angular.module('metacastleApp')
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 0;
+    var castle_id = 3;
     if (castle_id == 0) {
       var wallPath = [
         [5, 18, "tower"],
@@ -68,6 +68,23 @@ angular.module('metacastleApp')
       ]
       scene.addWall(outerPath, sStyles.lowStyle);
       scene.addWall(innerPath, sStyles.highStyle);
+    } else if(castle_id == 3) {
+      $scope.showTilemap = false;
+      $scope.CASTLEWID = 70;
+      $scope.CASTLEHEI = 45;
+      wallPath = [
+        [5, 33, "tower"],
+        [30, 33, "dungeon", sStyles.templarDungeonStyle],
+        [62, 33, "tower"],
+        [62, 19, "tower"],
+        [43, 19, "tower"],
+        [43, 5, "tower"],
+        [24, 5, "entrance"],
+        [5, 5, "tower"],
+        [5, 19, "tower"],
+      ];
+      // Test: 
+      scene.addPath(wallPath, sStyles.defaultStyle.crenelationMaterial);
     }
     
     scene.render();
@@ -83,12 +100,12 @@ angular.module('metacastleApp')
 Next actions:
  * Add a way of "decorating the inside" of a courtyard with junk like
    trees or bushes or flowers
- * Mpve the rectangle-filling logic into methods on a material object
- * (then) enable materials to color weird shapes
+ * Enable materials to color weird shapes
  * Directly pass sBuildings.tower etc. as parameter on the declaration.
 
 Done:  
  * Refactor the "make castle" stuff so that you can pass arbitrary paths.
+ * Move the rectangle-filling logic into methods on a material object
 
 Architectural reflections:
   * A "building def" should be a function without parameters, that reads
