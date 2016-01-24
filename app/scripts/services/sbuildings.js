@@ -97,7 +97,8 @@ angular.module('metacastleApp')
       // TODO: add top towers, more complicated
     }
   })
-  .service('sBuildingRenderers', function(sBuildings, sDisplay, sStyles) {
+  .service('sBuildingRenderers', function(sBuildings, sDisplay, sStyles,
+    sUtils) {
     var sBuildingRenderers = this;
     function makeCurtainSegmentRenderer(posA, posB, style) {
       var xA = posA[0];
@@ -200,43 +201,20 @@ angular.module('metacastleApp')
           return true;
         }
       }
-      // Helper for getting lines
-      function forBetween(a, b, callback) {
-        // TODO: callback with an extra parameter...
-        if (a > b) {
-          var tmp = b;
-          b = a;
-          a = tmp;
+      
+      var firstpoint = null;
+      sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+        // TODO: use the angleCode to get the first point!
+        fill(x + 100 * y);
+        if (!firstpoint) {
+          // Find a point guaranteed to be inside
+          var offset = sUtils.getInsideOffset(angleCode);
+          firstpoint = (x + offset.dx) + 100 *(y + offset.dy);
         }
-        for (var n = a; n <= b; n++) {
-          callback(n);
-        }
-      }
-      // First, fill in all the borders
-      //   nb: this could be a good place to use
-      //   special border tiles...
-      var prev = path[path.length - 1];
-      path.forEach(function(point) {
-        var px = prev[0];
-        var py = prev[1];
-        var cx = point[0];
-        var cy = point[1];
-        if (px == cx) {
-          forBetween(py, cy, function(y) {
-            // TODO: get an extra parameter here
-            fill(cx + 100 * y);
-          });
-        } else {
-          // py == cy can be assumed
-          forBetween(px, cx, function(x) {
-            fill(x + 100 * py);
-          });
-        }
-        prev = point;
       });
+
       // Now, flood-fill the rest
-      // Lazily assume the first point is top-left
-      var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
+      //var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
       var border = [firstpoint];
       while (border.length > 0) {
         var point = border.pop();
@@ -268,9 +246,9 @@ angular.module('metacastleApp')
       // TODO: move all that function in here for simplicity's sake
       renderBuildings(this.style, this.renderers);
     }
-    Scene.prototype.addPath = function(path, material) {
+    Scene.prototype.fillPath = function(path, material) {
       // TODO
-      material.drawEdge(path);
+      material.fillPath(path);
     }
     
     this.Scene = Scene;

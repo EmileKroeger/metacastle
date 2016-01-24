@@ -111,7 +111,20 @@ angular.module('metacastleApp')
         });
       }
     });
+  };
+  this.getInsideOffset = function(angleCode) {
+    // Given the angle type, get a point that's inside.
+    if (angleCode[1] == "r") {
+      return {dx: 1, dy: -1};
+    } else if (angleCode[1] == "l") {
+      return {dx: -1, dy: 1};
+    } else if (angleCode[1] == "u") {
+      return {dx: 1, dy: 1};
+    } else {
+      return {dx: -1, dy: -1};
+    }
   }
+  
 })
 .service('sDisplay', function () {
   this.tiles = [];
@@ -175,6 +188,7 @@ angular.module('metacastleApp')
     "ll": "bm",
     "lu": "bl",
     "ld": "in_tl",
+    "mm": "mm",
   };
   
 
@@ -188,7 +202,7 @@ angular.module('metacastleApp')
     this.tr_cut = topleft + 201;
     // edges only
     this.ml = topleft + 102;
-    this.mm = topleft + 103; // empy actually
+    this.mm = topleft + 103; // sometimes empty
     this.mr = topleft + 104;
     // Bottom crenelation
     this.bl = topleft + 202;
@@ -215,12 +229,59 @@ angular.module('metacastleApp')
     sDisplay.fillRect(x, y, 1, hei, this.mr);
     sDisplay.addTile(x, y + hei, this.tr_cut);
   }
+
   EdgedMaterial.prototype.drawEdge = function(path) {
+    // Draw special border along edge
     var self = this;
     sUtils.forEdgeTiles(path, function(x, y, angleCode) {
       sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
+
+  EdgedMaterial.prototype.fillPath = function(path) {
+    // Fill inside given path
+    var self = this;
+    var filled = {};
+    function fill(poscode, angleCode) {
+      if (filled[poscode]) {
+        return false;
+      } else {
+        filled[poscode] = true;
+        var x = poscode % 100;
+        var y = Math.floor((poscode - x) / 100);
+
+        sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
+        return true;
+      }
+    }
+    
+    var firstpoint = null;
+    sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+      fill(x + 100 * y, angleCode);
+      if (!firstpoint) {
+        // Find a point guaranteed to be inside
+        var offset = sUtils.getInsideOffset(angleCode);
+        firstpoint = (x + offset.dx) + 100 *(y + offset.dy);
+      }
+    });
+
+    // Now, flood-fill the rest
+    //var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
+    var border = [firstpoint];
+    while (border.length > 0) {
+      var point = border.pop();
+      if (fill(point, "mm")) {
+        // Add all neighbours to border
+        border.push(point - 1);
+        border.push(point + 1);
+        border.push(point - 100);
+        border.push(point + 100);
+      }
+      // else, already filled, do nothing
+    }
+
+  };
+
   
   function castleWallMaterial(topleft) {
     // Use flat wall on top too

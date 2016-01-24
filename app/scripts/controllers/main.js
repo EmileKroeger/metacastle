@@ -16,6 +16,10 @@ angular.module('metacastleApp')
     var scene = new sBuildingRenderers.Scene();
 
     var castle_id = 3;
+    // 0: small with palette
+    // 1: big weird shape
+    // 2: souble wall
+    // 3: experiments with fill
     if (castle_id == 0) {
       var wallPath = [
         [5, 18, "tower"],
@@ -74,7 +78,10 @@ angular.module('metacastleApp')
       $scope.CASTLEHEI = 45;
       wallPath = [
         [5, 33, "tower"],
-        [30, 33, "dungeon", sStyles.templarDungeonStyle],
+        [30, 33, "dungeon"],
+        [30, 43, "dungeon"],
+        [45, 43, "dungeon"],
+        [45, 33, "dungeon"],
         [62, 33, "tower"],
         [62, 19, "tower"],
         [43, 19, "tower"],
@@ -84,7 +91,7 @@ angular.module('metacastleApp')
         [5, 19, "tower"],
       ];
       // Test: 
-      scene.addPath(wallPath, sMaterials.WATER_DIRT);
+      scene.fillPath(wallPath, sMaterials.WATER_DIRT);
     }
     
     scene.render();
