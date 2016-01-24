@@ -187,46 +187,10 @@ angular.module('metacastleApp')
 
 
     this.fillPath = function(path, tilecode) {
-      // Helper for tracking who's been filled
-      var filled = {};
-      function fill(poscode) {
-        if (filled[poscode]) {
-          return false;
-        } else {
-          filled[poscode] = true;
-          var x = poscode % 100;
-          var y = Math.floor((poscode - x) / 100);
-
-          sDisplay.addTile(x, y, tilecode);
-          return true;
-        }
-      }
-      
-      var firstpoint = null;
+      // fills with tilecode. TODO: move to material method (exists)
       sUtils.forEdgeTiles(path, function(x, y, angleCode) {
-        // TODO: use the angleCode to get the first point!
-        fill(x + 100 * y);
-        if (!firstpoint) {
-          // Find a point guaranteed to be inside
-          var offset = sUtils.getInsideOffset(angleCode);
-          firstpoint = (x + offset.dx) + 100 *(y + offset.dy);
-        }
+        sDisplay.addTile(x, y, tilecode);
       });
-
-      // Now, flood-fill the rest
-      //var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
-      var border = [firstpoint];
-      while (border.length > 0) {
-        var point = border.pop();
-        if (fill(point)) {
-          // Add all neighbours to border
-          border.push(point - 1);
-          border.push(point + 1);
-          border.push(point - 100);
-          border.push(point + 100);
-        }
-        // else, already filled, do nothing
-      }
     }
     
     // Scene object

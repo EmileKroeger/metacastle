@@ -123,8 +123,47 @@ angular.module('metacastleApp')
     } else {
       return {dx: -1, dy: -1};
     }
-  }
-  
+  };
+  this.forTilesInside = function(path, callback) {
+    // Iter inside given path
+    var filled = {};
+    function fill(poscode, angleCode) {
+      if (filled[poscode]) {
+        return false;
+      } else {
+        filled[poscode] = true;
+        var x = poscode % 100;
+        var y = Math.floor((poscode - x) / 100);
+        callback(x, y, angleCode);
+        return true;
+      }
+    }
+    
+    var firstpoint = null;
+    sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+      fill(x + 100 * y, angleCode);
+      if (!firstpoint) {
+        // Find a point guaranteed to be inside
+        var offset = sUtils.getInsideOffset(angleCode);
+        firstpoint = (x + offset.dx) + 100 *(y + offset.dy);
+      }
+    });
+
+    // Now, flood-fill the rest
+    //var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
+    var border = [firstpoint];
+    while (border.length > 0) {
+      var point = border.pop();
+      if (fill(point, "mm")) {
+        // Add all neighbours to border
+        border.push(point - 1);
+        border.push(point + 1);
+        border.push(point - 100);
+        border.push(point + 100);
+      }
+      // else, already filled, do nothing
+    }
+  };
 })
 .service('sDisplay', function () {
   this.tiles = [];
@@ -241,45 +280,9 @@ angular.module('metacastleApp')
   EdgedMaterial.prototype.fillPath = function(path) {
     // Fill inside given path
     var self = this;
-    var filled = {};
-    function fill(poscode, angleCode) {
-      if (filled[poscode]) {
-        return false;
-      } else {
-        filled[poscode] = true;
-        var x = poscode % 100;
-        var y = Math.floor((poscode - x) / 100);
-
-        sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
-        return true;
-      }
-    }
-    
-    var firstpoint = null;
-    sUtils.forEdgeTiles(path, function(x, y, angleCode) {
-      fill(x + 100 * y, angleCode);
-      if (!firstpoint) {
-        // Find a point guaranteed to be inside
-        var offset = sUtils.getInsideOffset(angleCode);
-        firstpoint = (x + offset.dx) + 100 *(y + offset.dy);
-      }
+    sUtils.forTilesInside(path, function(x, y, angleCode) {
+      sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
-
-    // Now, flood-fill the rest
-    //var firstpoint = path[0][0] + 1 + 100 * (path[0][1] - 1);
-    var border = [firstpoint];
-    while (border.length > 0) {
-      var point = border.pop();
-      if (fill(point, "mm")) {
-        // Add all neighbours to border
-        border.push(point - 1);
-        border.push(point + 1);
-        border.push(point - 100);
-        border.push(point + 100);
-      }
-      // else, already filled, do nothing
-    }
-
   };
 
   
