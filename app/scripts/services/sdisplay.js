@@ -256,6 +256,16 @@ angular.module('metacastleApp')
     this.in_bl = topleft + inside_offset + 100;
     this.in_br = topleft + inside_offset + 101;
   }
+  
+  function getRectanglePath(surface) {
+    return [
+      [surface.x, surface.y],
+      [surface.x, surface.y + surface.hei],
+      [surface.x + surface.wid, surface.y + surface.hei],
+      [surface.x + surface.wid, surface.y],
+    ];
+  }
+  
   EdgedMaterial.prototype.fillRect = function(surface) {
     // TODO: better
     addRect(surface.x, surface.y, surface.wid, surface.hei, this);

@@ -15,7 +15,7 @@ angular.module('metacastleApp')
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 3;
+    var castle_id = 0;
     // 0: small with palette
     // 1: big weird shape
     // 2: souble wall
@@ -107,10 +107,11 @@ angular.module('metacastleApp')
 Next actions:
  * Add a way of "decorating the inside" of a courtyard with junk like
    trees or bushes or flowers
- * Enable materials to color weird shapes
  * Directly pass sBuildings.tower etc. as parameter on the declaration.
+ * Make a castle or building that is just a weird shape
 
 Done:  
+ * Enable materials to color weird shapes
  * Refactor the "make castle" stuff so that you can pass arbitrary paths.
  * Move the rectangle-filling logic into methods on a material object
 

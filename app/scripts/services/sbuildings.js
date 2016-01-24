@@ -125,29 +125,24 @@ angular.module('metacastleApp')
       this.x = x;
       this.y = y;
       this.args = args;
-      this.style = style; // optional extra style
+      this.style = style;
     }
-    BuildingRenderer.prototype.render = function(style) {
-      if (this.style) {
-        style = this.style;
-      }
-      var call_args = [style, this.x, this.y];
+    BuildingRenderer.prototype.render = function() {
+      var call_args = [this.style, this.x, this.y];
         call_args.push.apply(call_args, this.args);
       this.func.apply(this, call_args);
     }
 
-    function TowerRenderer(func, cx, cy, extra, customStyle) {
+    function TowerRenderer(func, cx, cy, extra, style) {
       this.x = cx - 2;
       this.y = cy - 2;
-      this.render = function(style) {
-        if (customStyle) {
-          style = customStyle;
-        }
+      this.render = function() {
         func(style, cx, cy);
       }
     }
     
     function makeNodeRenderer(style, nodeType, x, y) {
+      // TODO: directly pass classes instead of these keywords.
       if (nodeType == "tower") {
         return new TowerRenderer(style.towerFunc, x, y, [], style);
       } else if (nodeType == "dungeon") {
@@ -178,21 +173,6 @@ angular.module('metacastleApp')
       return renderers;
     }
 
-    function renderBuildings(style, buildings) {
-      buildings.sort(function(bA, bB) {return bA.y < bB.y;});
-      buildings.forEach(function(building) {
-        building.render(style);
-      });
-    }
-
-
-    this.fillPath = function(path, tilecode) {
-      // fills with tilecode. TODO: move to material method (exists)
-      sUtils.forEdgeTiles(path, function(x, y, angleCode) {
-        sDisplay.addTile(x, y, tilecode);
-      });
-    }
-    
     // Scene object
     function Scene(style) {
       if (!style) {
@@ -202,13 +182,21 @@ angular.module('metacastleApp')
       this.renderers = [];
     }
     Scene.prototype.addWall = function(path, style) {
+      // TODO: keep track of "free" interior
       var style = sStyles.combine(style, this.style);
-      sBuildingRenderers.fillPath(path, style.groundTile);
+      var insidePoints = [];
+      sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+        sDisplay.addTile(x, y, style.groundTile);
+      });
       this.renderers.push.apply(this.renderers, makeCurtainWall(style, path));
+      
     }
     Scene.prototype.render = function() {
-      // TODO: move all that function in here for simplicity's sake
-      renderBuildings(this.style, this.renderers);
+      this.renderers.sort(function(bA, bB) {return bA.y < bB.y;});
+      this.renderers.forEach(function(renderer) {
+        renderer.render();
+      });
+      
     }
     Scene.prototype.fillPath = function(path, material) {
       // TODO
