@@ -334,7 +334,7 @@ angular.module('metacastleApp')
   // TODO: some fancy materials that actually display random tiles.
   // We have those for dirt, water, sand, walls...
 })
-.service('sDecorations', function (sDisplay) {
+.service('sDecorations', function (sDisplay, sUtils) {
   function SingleTile(tilecode){
     this.tilecode = tilecode;
   }
@@ -356,6 +356,20 @@ angular.module('metacastleApp')
     for (var i = 0; i < this.height; i++) {
       sDisplay.addTile(x, y + i, this.bottomtilecode - (100 * i));
       
+    }
+  }
+  
+  function RandomDecoration(empties, decorations) {
+    this.total = empties + decorations.length;
+    this.decorations = decorations;
+  }
+  RandomDecoration.prototype.render = function(x, y) {
+    var i = sUtils.mod(x + 2 * y + 3 * (x * y), this.total);
+    if (i < this.decorations.length) {
+      //console.debug([i]);
+      this.decorations[i].render(x, y);
+    } else {
+      //console.debug(["no", i]);
     }
   }
   
@@ -394,6 +408,7 @@ angular.module('metacastleApp')
     this.anvil, this.sign, this.woodbarrel, this.bandedbarrel,
     this.woodbarrel_open, this.bandedbarrel_open, this.woodpile,
   ]
+  this.randomWorkItem = new RandomDecoration(12, this.workItems);
 })
 .service('sDecorators', function (sDisplay, sDecorations, sUtils) {
 
@@ -471,6 +486,6 @@ angular.module('metacastleApp')
   this.fancyGateDecorator = new FancyGateDecorator();
   this.windowedGateDecorator = new WindowedGateDecorator();
   
-  this.workDecorator = new StuffDecorator(10, sDecorations.workItems);
+  this.workDecorator = new StuffDecorator(11, sDecorations.workItems);
 });
 

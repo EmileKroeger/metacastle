@@ -180,8 +180,11 @@ angular.module('metacastleApp')
       // TODO: keep track of "free" interior
       var style = sStyles.combine(style, this.style);
       var insidePoints = [];
-      sUtils.forEdgeTiles(path, function(x, y, angleCode) {
+      sUtils.forTilesInside(path, function(x, y, angleCode) {
         sDisplay.addTile(x, y, style.groundTile);
+        if (style.groundDecoration) {
+          style.groundDecoration.render(x, y);
+        }
       });
       this.renderers.push.apply(this.renderers, makeCurtainWall(style, path));
       

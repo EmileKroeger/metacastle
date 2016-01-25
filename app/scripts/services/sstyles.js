@@ -15,6 +15,7 @@ angular.module('metacastleApp')
       crenelationMaterial: sMaterials.BLUECRENELATION,
       platformTile: 9,
       groundTile: 106, // dirt
+      groundDecoration: sDecorations.randomWorkItem,
       //groundTile: 703, // red flowers
       //groundTile: 1608, // rock
       gate: sDecorations.wideWoodenGate,
@@ -36,8 +37,6 @@ angular.module('metacastleApp')
       },
       dungeonDecorators: {
         facade: sDecorators.windowedGateDecorator,
-        // experimental:
-        platform: sDecorators.workDecorator,
       },
       //towerFunc: sBuildings.tinyTower,
       //dungeonFunc: sBuildings.buildingWithHat,
