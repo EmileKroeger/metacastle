@@ -23,7 +23,7 @@ angular.module('metacastleApp')
     if (castle_id == 0) {
       var wallPath = [
         [5,  18, sBuildings.ThinTower],
-        [14, 18, sBuildings.TowerCornerBuilding],
+        [14, 18, sBuildings.BigAssZiggurat],
         [24, 18, sBuildings.ThinTower],
         [24, 4,  sBuildings.ThinTower],
         [14, 4,  sBuildings.Entrance],

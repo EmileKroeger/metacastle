@@ -38,6 +38,10 @@ angular.module('metacastleApp')
     // Get in a "circular array" (i.e. get with modulo, python-style))
     return array[this.mod(index, array.length)];
   };
+  this.pseudoRandomInt = function(max, key) {
+    // TODO: maybe use the key or something, some day.
+    return Math.floor(Math.random() * max);
+  };
   // Geometry utils
   // Helper for getting lines
   this.forInside = function(a, b, callback) {
@@ -364,7 +368,7 @@ angular.module('metacastleApp')
     this.decorations = decorations;
   }
   RandomDecoration.prototype.render = function(x, y) {
-    var i = sUtils.mod(x + 2 * y + 3 * (x * y), this.total);
+    var i = sUtils.pseudoRandomInt(this.total, x + y + x*y);
     if (i < this.decorations.length) {
       //console.debug([i]);
       this.decorations[i].render(x, y);
@@ -408,7 +412,7 @@ angular.module('metacastleApp')
     this.anvil, this.sign, this.woodbarrel, this.bandedbarrel,
     this.woodbarrel_open, this.bandedbarrel_open, this.woodpile,
   ]
-  this.randomWorkItem = new RandomDecoration(12, this.workItems);
+  this.randomWorkItem = new RandomDecoration(32, this.workItems);
 })
 .service('sDecorators', function (sDisplay, sDecorations, sUtils) {
 

@@ -78,8 +78,6 @@ angular.module('metacastleApp')
     this.TowerCornerBuilding = function(cx, cy, style) {
       this.x = cx - 4;
       this.y = cy - 5;
-      var hei = style.towerHeight;
-      var wid = 10;
       this.render = function() {
         // TODO: add top towers, a bit complicated
         sBuildings.addBuilding(style, this.x, this.y, 10, 8, 7,
@@ -88,6 +86,18 @@ angular.module('metacastleApp')
         sBuildings.tinyTower(style, this.x + 9, this.y);
       };
     };
+    
+    this.BigAssZiggurat = function(cx, cy, style) {
+      this.x = cx - 5;
+      this.y = cy - 8;
+      this.render = function() {
+        var deco = style.dungeonDecorators;
+        sBuildings.addBuilding(style, this.x,   this.y,     12, 4, 8, deco);
+        sBuildings.addBuilding(style, this.x+2, this.y + 5,  8, 4, 6, deco);
+        sBuildings.addBuilding(style, this.x+4, this.y + 10, 4, 4, 4);
+        
+      }
+    }
     
     this.Entrance = function(cx, cy, style) {
       this.x = cx - 2;
