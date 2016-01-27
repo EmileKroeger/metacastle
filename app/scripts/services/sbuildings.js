@@ -87,6 +87,36 @@ angular.module('metacastleApp')
       };
     };
     
+    function crossPath(far, near) {
+      return [
+        [-far,   near],
+        [-near,  near],
+        [-near,  far],
+        [ near,  far],
+        [ near,  near],
+        [ far,   near],
+        [ far,  -near],
+        [ near, -near],
+        [ near, -far],
+        [-near, -far],
+        [-near, -near],
+        [-far,  -near],
+      ];
+    }
+
+
+    this.CrossDungeon = function(cx, cy, style) {
+      this.x = cx - 6;
+      this.y = cy - 6;
+      this.render = function() {
+        var offsets = crossPath(5, 3);
+        var path = offsets.map(function(dx_dy) {
+          return [cx + dx_dy[0], cy + dx_dy[1]];
+        });
+        style.platformMaterial.fillPath(path);
+      }
+    }
+    
     this.BigAssZiggurat = function(cx, cy, style) {
       this.x = cx - 5;
       this.y = cy - 8;

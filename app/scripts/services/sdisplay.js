@@ -298,6 +298,19 @@ angular.module('metacastleApp')
       sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
+  
+  function EdgeAndTileMaterial(edgeMaterial, tilecode) {
+    this.edgeMaterial = edgeMaterial;
+    this.tilecode = tilecode;
+  }
+  EdgeAndTileMaterial.prototype.fillPath = function(path) {
+    // Fill inside given path
+    var self = this;
+    sUtils.forTilesInside(path, function(x, y, angleCode) {
+      sDisplay.addTile(x, y, self.tilecode);
+      sDisplay.addTile(x, y, self.edgeMaterial[ANGLECODE_TO_TILEPOS[angleCode]]);
+    });
+  };
 
   
   function castleWallMaterial(topleft) {
@@ -325,6 +338,7 @@ angular.module('metacastleApp')
   this.BROWNWALLS = new castleWallMaterial(1234);
   //var GREYPLATFORM = new castlePlatformMaterial(1220);
   this.BLUECRENELATION = new EdgedMaterial(3127);
+  this.BLUEPLATFORM = new EdgeAndTileMaterial(this.BLUECRENELATION, 9);
   this.WATER_DIRT = new EdgedMaterial(0, 100);
   this.WATER_STONE = new EdgedMaterial(300);
   this.REDFLOWERS = new EdgedMaterial(600);

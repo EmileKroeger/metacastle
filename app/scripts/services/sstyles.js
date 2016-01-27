@@ -13,6 +13,7 @@ angular.module('metacastleApp')
     this.defaultStyle = {
       wallMaterial: sMaterials.BLUEWALLS,
       crenelationMaterial: sMaterials.BLUECRENELATION,
+      platformMaterial: sMaterials.BLUEPLATFORM,
       platformTile: 9,
       groundTile: 106, // dirt
       groundDecoration: sDecorations.randomWorkItem,
