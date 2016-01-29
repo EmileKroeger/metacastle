@@ -8,7 +8,7 @@
  * Service in the metacastleApp.
  */
 angular.module('metacastleApp')
-  .service('sBuildings', function(sDisplay) {
+  .service('sBuildings', function(sDisplay, sUtils) {
     var sBuildings = this;
     this.addBuilding = function(style, x, y, wid, hei, platform, decorators) {
       // Wall
@@ -111,7 +111,31 @@ angular.module('metacastleApp')
       this.render = function() {
         var offsets = crossPath(5, 3);
         var path = offsets.map(function(dx_dy) {
-          return [cx + dx_dy[0], cy + dx_dy[1]];
+          return [cx + dx_dy[0], cy + dx_dy[1] + 4];
+        });
+        // WIP on walls
+        var walls = path.map(function(cur, i) {
+          var next = sUtils.modGet(path, i + 1);
+          //console.debug(["??", cur, next]);
+          if ((cur[1] == next[1]) && (cur[0] > next[0])) {
+            // horizontal wall
+            //console.log("draw?");
+            return {
+              x: next[0],
+              y: cur[1] - 5,
+              wid: cur[0] - next[0] + 1,
+              //wid: 5,
+              hei: 5,
+            }
+            //style.wallMaterial.fillRect(wall);
+          }
+        });
+        walls = walls.filter(function(x) {return x;});
+        //console.debug(walls);
+        walls.sort(function(sA, sB) {return (sA.y < sB.y)});
+        //walls.forEach(style.wallMaterial.fillRect);
+        walls.forEach(function(wall) {
+          style.wallMaterial.fillRect(wall);
         });
         style.platformMaterial.fillPath(path);
       }
