@@ -337,7 +337,10 @@ angular.module('metacastleApp')
   this.BLUEWALLS = new castleWallMaterial(1227);
   this.BROWNWALLS = new castleWallMaterial(1234);
   //var GREYPLATFORM = new castlePlatformMaterial(1220);
+  this.YELLOWCRENELATION = new EdgedMaterial(3113);
+  this.GREYCRENELATION = new EdgedMaterial(3120);
   this.BLUECRENELATION = new EdgedMaterial(3127);
+  this.BROWNCRENELATION = new EdgedMaterial(3134);
   this.BLUEPLATFORM = new EdgeAndTileMaterial(this.BLUECRENELATION, 9);
   this.WATER_DIRT = new EdgedMaterial(0, 100);
   this.WATER_STONE = new EdgedMaterial(300);

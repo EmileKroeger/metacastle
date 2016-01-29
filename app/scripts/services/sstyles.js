@@ -44,6 +44,30 @@ angular.module('metacastleApp')
       dungeonFunc: sBuildings.towerCornerBuilding,
     };
     
+    this.yellowStyle = {
+      wallMaterial: sMaterials.YELLOWWALLS,
+      crenelationMaterial: sMaterials.YELLOWCRENELATION,
+      platformTile: 207,
+    }
+    
+    this.greyStyle = {
+      wallMaterial: sMaterials.GREYWALLS,
+      crenelationMaterial: sMaterials.GREYCRENELATION,
+      platformTile: 206,
+    }
+    
+    this.blueStyle = {
+      wallMaterial: sMaterials.BLUEWALLS,
+      crenelationMaterial: sMaterials.BLUECRENELATION,
+      platformTile: 9,
+    }
+    
+    this.brownStyle = {
+      wallMaterial: sMaterials.BROWNWALLS,
+      crenelationMaterial: sMaterials.BROWNCRENELATION,
+      platformTile: 205,
+    }
+    
     this.lowStyle = {
       towerHeight: 5,
       curtainWallHeight: 3,

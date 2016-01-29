@@ -23,13 +23,14 @@ angular.module('metacastleApp')
     if (castle_id == 0) {
       var wallPath = [
         [5,  18, sBuildings.ThinTower],
-        [14, 18, sBuildings.CrossDungeon],
+        [14, 18, sBuildings.BigAssZiggurat],
+        //[14, 18, sBuildings.CrossDungeon],
         [24, 18, sBuildings.ThinTower],
         [24, 4,  sBuildings.ThinTower],
         [14, 4,  sBuildings.Entrance],
         [5,  4,  sBuildings.ThinTower],
       ];
-      scene.addWall(wallPath, sStyles.templarWallStyle);
+      scene.addWall(wallPath, sStyles.yellowStyle);
     } if(castle_id == 1) {
       // Big awkwardly-shaped castle
       $scope.showTilemap = false;
@@ -46,7 +47,8 @@ angular.module('metacastleApp')
         [5,  5,  sBuildings.ThinTower],
         [5,  19, sBuildings.ThinTower],
       ];
-      scene.addWall(wallPath, sStyles.templarWallStyle);
+      scene.addWall(wallPath, sStyles.brownStyle);
+      //scene.addWall(wallPath, sStyles.templarWallStyle);
     } else if(castle_id == 2) {
       // Double castle
       $scope.showTilemap = false;
