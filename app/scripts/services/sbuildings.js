@@ -87,6 +87,25 @@ angular.module('metacastleApp')
       };
     };
     
+    this.BroadDungeon = function(cx, cy, style) {
+      this.x = cx - 5;
+      this.y = cy - 6;
+      this.render = function() {
+        sBuildings.addBuilding(style, this.x, this.y, 12, 6, 8,
+          style.dungeonDecorators);
+      };
+    };
+    
+    this.TallDungeon = function(cx, cy, style) {
+      this.x = cx - 3;
+      this.y = cy - 5;
+      this.render = function() {
+        // TODO: add top towers, a bit complicated
+        sBuildings.addBuilding(style, this.x, this.y, 8, 9, 6,
+          style.dungeonDecorators);
+      };
+    };
+    
     function crossPath(far, near) {
       return [
         [-far,   near],
@@ -268,7 +287,7 @@ angular.module('metacastleApp')
       material.fillPath(path);
     };
     Scene.prototype.getBackgroundTile = function(x, y) {
-      return this.style.basicTerrain;
+      return sUtils.choice(this.style.basicTerrain);
     }
     
     this.Scene = Scene;

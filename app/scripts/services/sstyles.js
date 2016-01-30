@@ -16,7 +16,7 @@ angular.module('metacastleApp')
       platformMaterial: sMaterials.BLUEPLATFORM,
       platformTile: 9,
       groundTile: 106, // dirt
-      basicTerrain: 5, // grass
+      basicTerrain: [5], // grass
       groundDecoration: sDecorations.randomWorkItem,
       //groundTile: 703, // red flowers
       //groundTile: 1608, // rock
@@ -46,24 +46,29 @@ angular.module('metacastleApp')
       wallMaterial: sMaterials.YELLOWWALLS,
       crenelationMaterial: sMaterials.YELLOWCRENELATION,
       platformTile: 207,
+      trapdoor: sDecorations.yellowStairsDown,
+      basicTerrain: [8, 108], // sand
     }
     
     this.greyStyle = {
       wallMaterial: sMaterials.GREYWALLS,
       crenelationMaterial: sMaterials.GREYCRENELATION,
       platformTile: 206,
+      trapdoor: sDecorations.greyStairsDown,
     }
     
     this.blueStyle = {
       wallMaterial: sMaterials.BLUEWALLS,
       crenelationMaterial: sMaterials.BLUECRENELATION,
       platformTile: 9,
+      trapdoor: sDecorations.blueStairsDown,
     }
     
     this.brownStyle = {
       wallMaterial: sMaterials.BROWNWALLS,
       crenelationMaterial: sMaterials.BROWNCRENELATION,
       platformTile: 205,
+      trapdoor: sDecorations.brownStairsDown,
     }
     
     this.lowStyle = {

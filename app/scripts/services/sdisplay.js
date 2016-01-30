@@ -42,6 +42,11 @@ angular.module('metacastleApp')
     // TODO: maybe use the key or something, some day.
     return Math.floor(Math.random() * max);
   };
+
+  this.choice = function(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+  
   // Geometry utils
   // Helper for getting lines
   this.forInside = function(a, b, callback) {
@@ -408,10 +413,16 @@ angular.module('metacastleApp')
   this.wideSteelSquareGratedGate = new WideTile(638);
   // Banners
   this.tallRedBanner = new HighTile(249, 3);
+  this.tallBlueBanner = new HighTile(549, 3);
   this.tallGreenBanner = new HighTile(849, 3);
   this.tallRedBannerCross = new HighTile(250, 3);
+  this.tallBlueBannerCross = new HighTile(550, 3);
+  this.tallGreenBannerCross = new HighTile(850, 3);
   // Trapdoors
+  this.yellowStairsDown = new SingleTile(1815);
+  this.greyStairsDown = new SingleTile(1822);
   this.blueStairsDown = new SingleTile(1829);
+  this.browsnStairsDown = new SingleTile(1836);
   
   // Misc. Items
   this.anvil = new SingleTile(15);

@@ -13,7 +13,7 @@ angular.module('metacastleApp')
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 2;
+    var castle_id = 0;
     // 0: small with palette
     // 1: big weird shape
     // 2: souble wall
