@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, sUtils, sDisplay,
-      sBuildings, sBuildingRenderers, sStyles, sMaterials) {
+      sBuildings, sBuildingRenderers, sStyles, sMaterials, sCastles) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -9,76 +9,27 @@ angular.module('metacastleApp')
     }
     $scope.tiles = sDisplay.tiles;
 
-    $scope.CASTLEWID = 30;
-    $scope.CASTLEHEI = 30;
-    $scope.showTilemap = true;
+    $scope.showTilemap = false;
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 0;
+    var castle_id = 2;
     // 0: small with palette
     // 1: big weird shape
     // 2: souble wall
     // 3: experiments with fill
     if (castle_id == 0) {
-      var wallPath = [
-        [5,  18, sBuildings.ThinTower],
-        [14, 18, sBuildings.BigAssZiggurat],
-        //[14, 18, sBuildings.CrossDungeon],
-        [24, 18, sBuildings.ThinTower],
-        [24, 4,  sBuildings.ThinTower],
-        [14, 4,  sBuildings.Entrance],
-        [5,  4,  sBuildings.ThinTower],
-      ];
-      scene.addWall(wallPath, sStyles.yellowStyle);
+      sCastles.smallCastle(scene);
+      $scope.showTilemap = true;
     } if(castle_id == 1) {
-      // Big awkwardly-shaped castle
-      $scope.showTilemap = false;
-      $scope.CASTLEWID = 70;
-      $scope.CASTLEHEI = 45;
-      wallPath = [
-        [5,  33, sBuildings.ThinTower],
-        [30, 33, sBuildings.TowerCornerBuilding, sStyles.templarDungeonStyle],
-        [62, 33, sBuildings.ThinTower],
-        [62, 19, sBuildings.ThinTower],
-        [43, 19, sBuildings.ThinTower],
-        [43, 5,  sBuildings.ThinTower],
-        [24, 5,  sBuildings.Entrance],
-        [5,  5,  sBuildings.ThinTower],
-        [5,  19, sBuildings.ThinTower],
-      ];
-      scene.addWall(wallPath, sStyles.brownStyle);
-      //scene.addWall(wallPath, sStyles.templarWallStyle);
+      sCastles.bigCourtyardCastle(scene);
     } else if(castle_id == 2) {
-      // Double castle
-      $scope.showTilemap = false;
-      $scope.CASTLEWID = 70;
-      $scope.CASTLEHEI = 45;
-      var outerPath = [
-        [5,  33, sBuildings.ThinTower],
-        [62, 33, sBuildings.ThinTower],
-        [62, 19, sBuildings.ThinTower],
-        [62, 5,  sBuildings.ThinTower],
-        [43, 5,  sBuildings.ThinTower],
-        [24, 5,  sBuildings.Entrance],
-        [5,  5,  sBuildings.ThinTower],
-        [5,  19, sBuildings.ThinTower],
-      ];
-      var innerPath = [
-        [20, 29, sBuildings.ThinTower],
-        [34, 29, sBuildings.TowerCornerBuilding],
-        [47, 29, sBuildings.ThinTower],
-        [47, 13, sBuildings.ThinTower],
-        [34, 13, sBuildings.Entrance],
-        [20, 13, sBuildings.ThinTower],
-      ]
-      scene.addWall(outerPath, sStyles.lowStyle);
-      scene.addWall(innerPath, sStyles.highStyle);
+      sCastles.doubleWallCastle(scene);
     } else if(castle_id == 3) {
-      $scope.showTilemap = false;
-      $scope.CASTLEWID = 70;
-      $scope.CASTLEHEI = 45;
-      wallPath = [
+      // EXperiments
+      scene.wid = 70;
+      scene.hei = 45;
+      var path = [
         [5,  33],
         [30, 33],
         [30, 43],
@@ -93,13 +44,15 @@ angular.module('metacastleApp')
         [5,  19],
       ];
       // Test: 
-      scene.fillPath(wallPath, sMaterials.WATER_DIRT);
+      scene.fillPath(path, sMaterials.WATER_DIRT);
     }
-    
+
+    $scope.CASTLEWID = scene.wid;
+    $scope.CASTLEHEI = scene.hei;
     scene.render();
 
     $scope.getCastleTile = function(x, y) {
-      return 5;
+      return scene.getBackgroundTile(x, y);
     }
     $scope.getStyle = sUtils.getStyle;
   });

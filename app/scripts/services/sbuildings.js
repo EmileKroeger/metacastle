@@ -157,7 +157,8 @@ angular.module('metacastleApp')
       this.x = cx - 2;
       this.y = cy - 2;
       this.render = function() {
-        sBuildings.addBuilding(style, this.x, this.y, 6, 6, 5,
+        var hei = Math.max(6, style.curtainWallHeight + 1);
+        sBuildings.addBuilding(style, this.x, this.y, 6, hei, 5,
           style.entranceDecorators);
       };
     };
@@ -239,6 +240,8 @@ angular.module('metacastleApp')
       }
       this.style = sStyles.combine(style);
       this.renderers = [];
+      this.wid = 10;
+      this.hei = 10;
     }
     Scene.prototype.addWall = function(path, style) {
       // TODO: keep track of "free" interior
@@ -263,6 +266,9 @@ angular.module('metacastleApp')
     Scene.prototype.fillPath = function(path, material) {
       // TODO
       material.fillPath(path);
+    };
+    Scene.prototype.getBackgroundTile = function(x, y) {
+      return this.style.basicTerrain;
     }
     
     this.Scene = Scene;

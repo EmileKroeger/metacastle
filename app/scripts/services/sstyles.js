@@ -16,6 +16,7 @@ angular.module('metacastleApp')
       platformMaterial: sMaterials.BLUEPLATFORM,
       platformTile: 9,
       groundTile: 106, // dirt
+      basicTerrain: 5, // grass
       groundDecoration: sDecorations.randomWorkItem,
       //groundTile: 703, // red flowers
       //groundTile: 1608, // rock
@@ -26,7 +27,6 @@ angular.module('metacastleApp')
       towerHeight: 10,
       curtainWallHeight: 5,
       towerFunc: sBuildings.thinTower,
-      //tallBanner: sDecorations.tallRedBannerCross,
       tallBanner: sDecorations.tallGreenBanner,
       towerDecorators: {
         facade: sDecorators.highWindowsDecorator,
@@ -39,8 +39,6 @@ angular.module('metacastleApp')
       dungeonDecorators: {
         facade: sDecorators.windowedGateDecorator,
       },
-      //towerFunc: sBuildings.tinyTower,
-      //dungeonFunc: sBuildings.buildingWithHat,
       dungeonFunc: sBuildings.towerCornerBuilding,
     };
     
