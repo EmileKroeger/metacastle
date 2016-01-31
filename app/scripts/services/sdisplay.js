@@ -392,18 +392,20 @@ angular.module('metacastleApp')
   RandomDecoration.prototype.render = function(x, y) {
     var i = sUtils.pseudoRandomInt(this.total, x + y + x*y);
     if (i < this.decorations.length) {
-      //console.debug([i]);
       this.decorations[i].render(x, y);
     } else {
-      //console.debug(["no", i]);
     }
   }
   
   // Windows
-  this.greySlit = new SingleTile(845);
-  this.greyCrossSlit = new SingleTile(844);
-  this.greyRoundedWindow = new SingleTile(846)
   this.greyGothicWindow = new SingleTile(847)
+  this.greyPointyWindow = new SingleTile(840)
+  this.greyAngledWindow = new SingleTile(842)
+  this.greySquareWindow = new SingleTile(843)
+  this.greyCrossSlit = new SingleTile(844);
+  this.greySlit = new SingleTile(845);
+  this.greyRoundedWindow = new SingleTile(846)
+  this.greyRomanWindow = new SingleTile(848)
   this.yellowSlit = new SingleTile(945);
   this.yellowCrossSlit = new SingleTile(944);
   this.yellowRoundedWindow = new SingleTile(946)
@@ -526,6 +528,21 @@ angular.module('metacastleApp')
       style.window.render(middleLeft + 2, y);
     }
   }
+  
+  function ManyWindowedGateDecorator() {
+  }
+  ManyWindowedGateDecorator.prototype.render = function(style, surface) {
+    var middleLeft = surface.x + Math.floor(surface.wid / 2.0) - 1;
+    style.gate.render(middleLeft, surface.y);
+    for (var y=surface.y + 1; y < surface.y + surface.hei; y += 2) {
+      var dx0 = (y==surface.y + 1) ? 1 : 0;
+      for (var dx = dx0; (2 * dx) < surface.wid; dx++) {
+        style.window.render(middleLeft - dx, y);
+        style.window.render(middleLeft + 1 + dx, y);
+      }
+    }
+  }
+  this.manyWindowedGateDecorator = new ManyWindowedGateDecorator();
   
   function StuffDecorator(empties, decorations) {
     this.total = empties + decorations.length;

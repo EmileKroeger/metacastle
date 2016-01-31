@@ -9,7 +9,7 @@
  */
 angular.module('metacastleApp')
   .service('sCastles', function sCastles(sStyles, sBuildings, sUtils,
-      sDecorators) {
+      sDecorators, sDecorations) {
     // AngularJS will instantiate a singleton by calling "new" on this function
         
     var getDungeon = function() {
@@ -39,13 +39,6 @@ angular.module('metacastleApp')
         sStyles.greyStyle,
         sStyles.blueStyle,
         sStyles.brownStyle,
-      ]);
-    };
-    
-    function getDungeonStyle() {
-      return sUtils.choice([
-        sStyles.dungeonStyle,
-        sStyles.templarDungeonStyle,
       ]);
     };
     
@@ -86,17 +79,53 @@ angular.module('metacastleApp')
         },
       };
     }
+    function getDungeonDecoStyle() {
+      return sUtils.choice([
+        sStyles.dungeonStyle,
+        sStyles.templarDungeonStyle,
+      ]);
+    };
+    function getDungeonStyle() {
+      var style = getDungeonDecoStyle();
+      var decorator = sUtils.choice([
+        sDecorators.windowedGateDecorator,
+        sDecorators.manyWindowedGateDecorator,
+      ]);
+      //decorator = sDecorators.manyWindowedGateDecorator;
+      style.dungeonDecorators = {
+          facade: decorator,
+      };
+      // Window
+      var windowDec = sUtils.choice([
+        sDecorations.greyGothicWindow,
+        sDecorations.greyPointyWindow,
+        sDecorations.greyAngledWindow,
+        sDecorations.greySquareWindow,
+        sDecorations.greyRoundedWindow,
+        sDecorations.greyRomanWindow,
+      ]);
+      style.window = windowDec;
+      return style;
+      //return {
+      //  dungeonDecorators: {
+      //    facade: decorator,
+      //  },
+      //};
+    }
+    
+    function addStyles(scene) {
+      scene.addStyle(getMaterialStyle());
+      scene.addStyle(getFlagStyle());
+      scene.addStyle(getTowerStyle());
+    }
     
     this.smallCastle = function(scene) {
       scene.wid = 30;
       scene.hei = 30;
-      scene.addStyle(getMaterialStyle());
-      scene.addStyle(getFlagStyle());
-      scene.addStyle(getTowerStyle());
+      addStyles(scene);
       var wallPath = [
         [5,  18, sBuildings.ThinTower],
         [14, 18, getDungeon(), getDungeonStyle()],
-        //[14, 18, sBuildings.TallDungeon],
         [24, 18, sBuildings.ThinTower],
         [24, 4,  sBuildings.ThinTower],
         [14, 4,  sBuildings.Entrance, getEntranceStyle()],
@@ -107,38 +136,40 @@ angular.module('metacastleApp')
     this.bigCourtyardCastle = function(scene) {
       scene.wid = 70;
       scene.hei = 45;
+      addStyles(scene);
       var wallPath = [
         [5,  33, sBuildings.ThinTower],
-        [30, 33, sBuildings.TowerCornerBuilding, sStyles.templarDungeonStyle],
+        [30, 33, getDungeon(), getDungeonStyle()],
         [62, 33, sBuildings.ThinTower],
         [62, 19, sBuildings.ThinTower],
         [43, 19, sBuildings.ThinTower],
         [43, 5,  sBuildings.ThinTower],
-        [24, 5,  sBuildings.Entrance],
+        [24, 5,  sBuildings.Entrance, getEntranceStyle()],
         [5,  5,  sBuildings.ThinTower],
         [5,  19, sBuildings.ThinTower],
       ];
-      scene.addWall(wallPath, sStyles.brownStyle);
+      scene.addWall(wallPath);
     }
     this.doubleWallCastle = function(scene) {
       scene.wid = 70;
       scene.hei = 45;
+      addStyles(scene);
       var outerPath = [
         [5,  33, sBuildings.ThinTower],
         [62, 33, sBuildings.ThinTower],
         [62, 19, sBuildings.ThinTower],
         [62, 5,  sBuildings.ThinTower],
         [43, 5,  sBuildings.ThinTower],
-        [24, 5,  sBuildings.Entrance],
+        [24, 5,  sBuildings.Entrance, getEntranceStyle()],
         [5,  5,  sBuildings.ThinTower],
         [5,  19, sBuildings.ThinTower],
       ];
       var innerPath = [
         [20, 29, sBuildings.ThinTower],
-        [34, 29, sBuildings.TowerCornerBuilding],
+        [34, 29, getDungeon(), getDungeonStyle()],
         [47, 29, sBuildings.ThinTower],
         [47, 13, sBuildings.ThinTower],
-        [34, 13, sBuildings.Entrance],
+        [34, 13, sBuildings.Entrance, getEntranceStyle()],
         [20, 13, sBuildings.ThinTower],
       ]
       scene.addWall(outerPath, sStyles.lowStyle);
