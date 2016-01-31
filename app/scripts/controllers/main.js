@@ -3,7 +3,6 @@ angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, $routeParams, sUtils, sDisplay,
       sBuildings, sBuildingRenderers, sStyles, sMaterials, sCastles) {
     $scope.range = sUtils.range;
-    console.debug($routeParams);
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
       return 100 * (30 - y) + x;
