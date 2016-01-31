@@ -193,6 +193,10 @@ angular.module('metacastleApp')
     }
   }
   
+  this.clear = function() {
+    this.tiles.length = 0;
+  }
+  
 })
 .service('sMaterials', function (sDisplay, sUtils) {
   // Helper function, only for materials of a certain kind.

@@ -1,31 +1,26 @@
 'use strict';
 angular.module('metacastleApp')
-  .controller('MainCtrl', function ($scope, sUtils, sDisplay,
+  .controller('MainCtrl', function ($scope, $routeParams, sUtils, sDisplay,
       sBuildings, sBuildingRenderers, sStyles, sMaterials, sCastles) {
     $scope.range = sUtils.range;
+    console.debug($routeParams);
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
       return 100 * (30 - y) + x;
     }
+    sDisplay.clear();
     $scope.tiles = sDisplay.tiles;
-
-    $scope.showTilemap = false;
 
     var scene = new sBuildingRenderers.Scene();
 
-    var castle_id = 2;
-    // 0: small with palette
-    // 1: big weird shape
-    // 2: souble wall
-    // 3: experiments with fill
-    if (castle_id == 0) {
-      sCastles.smallCastle(scene);
-      $scope.showTilemap = true;
-    } if(castle_id == 1) {
-      sCastles.bigCourtyardCastle(scene);
-    } else if(castle_id == 2) {
+    // Very ugly but gets the job done
+    var hash = window.location.hash;
+    if (hash == "#/large/") {
       sCastles.doubleWallCastle(scene);
-    } else if(castle_id == 3) {
+      //sCastles.bigCourtyardCastle(scene);
+    } else if ((hash == "#/debug/") || (hash == "#/small/")) {
+      sCastles.smallCastle(scene);
+    } else if(false) {
       // EXperiments
       scene.wid = 70;
       scene.hei = 45;

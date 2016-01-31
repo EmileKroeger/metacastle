@@ -10,8 +10,26 @@
  */
 angular
   .module('metacastleApp', [
-    'ngAnimate',
+    //'ngAnimate',
     'ngCookies',
     'ngResource',
-    'ngSanitize'
-  ]);
+    'ngSanitize',
+    'ngRoute',
+  ])
+  .config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: 'views/menu.html', 
+      })
+      .when('/small/', {
+        templateUrl: 'views/main.html', 
+        controller: 'MainCtrl'})
+      .when('/large/', {
+        templateUrl: 'views/main.html', 
+        controller: 'MainCtrl'})
+      .when('/debug/', {
+        templateUrl: 'views/debug.html', 
+        controller: 'MainCtrl'})
+      .otherwise({redirectTo: '/'});
+  }]);
+

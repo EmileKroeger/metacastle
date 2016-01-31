@@ -15,3 +15,18 @@
     >
   </div>
 </div>
+
+Tilemap:
+
+<div class="tilemapbox">
+  <div ng-repeat="j in range(34)" class="row">
+    <span ng-repeat="i in range(56)"
+      ng-style="getStyle(i, j, getTilemapTile(i, 31 - 1 - j))"
+      class="tile"
+      title="{{100 * j + i}}"
+      >
+      &nbsp;
+    </span>
+  </div>
+</div>
+
