@@ -448,15 +448,24 @@ angular.module('metacastleApp')
 })
 .service('sDecorators', function (sDisplay, sDecorations, sUtils) {
 
-  function HighWindowsDecorator() {
+  function SingleHighWindowDecorator() {
+  }
+  SingleHighWindowDecorator.prototype.render = function(style, surface) {
+    var middleLeft = surface.x + Math.floor(surface.wid / 2.0);
+    var y = surface.y + surface.hei - 2;
+    style.window.render(middleLeft, y);
+  };
+
+  function HighWindowsDecorator(step) {
+    this.step = step;
   }
   HighWindowsDecorator.prototype.render = function(style, surface) {
     var x = surface.x + 1;
     var y = surface.y + surface.hei - 2;
     var x_max = surface.x + surface.wid - 2;
     while (x <= x_max) {
-      style.window.render(x, y)
-      x += 2;
+      style.window.render(x, y);
+      x += this.step;
     }
   };
 
@@ -516,7 +525,9 @@ angular.module('metacastleApp')
     }
   }
   
-  this.highWindowsDecorator = new HighWindowsDecorator();
+  this.singleHighWindowDecorator = new SingleHighWindowDecorator();
+  this.manyHighWindowsDecorator = new HighWindowsDecorator(1);
+  this.highWindowsDecorator = new HighWindowsDecorator(2);
   this.trapdoorDecorator = new TrapdoorDecorator();
   this.gateDecorator = new GateDecorator();
   this.fancyGateDecorator = new FancyGateDecorator();

@@ -8,7 +8,8 @@
  * Service in the metacastleApp.
  */
 angular.module('metacastleApp')
-  .service('sCastles', function sCastles(sStyles, sBuildings, sUtils) {
+  .service('sCastles', function sCastles(sStyles, sBuildings, sUtils,
+      sDecorators) {
     // AngularJS will instantiate a singleton by calling "new" on this function
         
     var getDungeon = function() {
@@ -56,18 +57,48 @@ angular.module('metacastleApp')
       ]);
     }
     
+    function getEntranceStyle() {
+      var decorator = sUtils.choice([
+        sDecorators.gateDecorator,
+        sDecorators.windowedGateDecorator,
+        sDecorators.fancyGateDecorator,
+      ]);
+      return {
+        entranceDecorators: {
+          facade: decorator,
+          platform: sDecorators.trapdoorDecorator,
+        },
+      };
+    }
+    
+    function getTowerStyle() {
+      var decorator = sUtils.choice([
+        sDecorators.singleHighWindowDecorator,
+        sDecorators.manyHighWindowsDecorator,
+        sDecorators.highWindowsDecorator,
+        sDecorators.highWindowsDecorator,
+      ]);
+      return {
+        towerDecorators: {
+          facade: decorator,
+          platform: sDecorators.trapdoorDecorator,
+        },
+      };
+    }
+    
     this.smallCastle = function(scene) {
       scene.wid = 30;
       scene.hei = 30;
       scene.addStyle(getMaterialStyle());
       scene.addStyle(getFlagStyle());
+      scene.addStyle(getTowerStyle());
       var wallPath = [
         [5,  18, sBuildings.ThinTower],
         [14, 18, getDungeon(), getDungeonStyle()],
         //[14, 18, sBuildings.TallDungeon],
         [24, 18, sBuildings.ThinTower],
         [24, 4,  sBuildings.ThinTower],
-        [14, 4,  sBuildings.Entrance],
+        [14, 4,  sBuildings.Entrance, getEntranceStyle()],
         [5,  4,  sBuildings.ThinTower],
       ];
       scene.addWall(wallPath);
