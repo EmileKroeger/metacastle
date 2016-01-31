@@ -262,6 +262,9 @@ angular.module('metacastleApp')
       this.wid = 10;
       this.hei = 10;
     }
+    Scene.prototype.addStyle = function(style) {
+      this.style = sStyles.combine(style, this.style);
+    };
     Scene.prototype.addWall = function(path, style) {
       // TODO: keep track of "free" interior
       var style = sStyles.combine(style, this.style);
@@ -287,7 +290,8 @@ angular.module('metacastleApp')
       material.fillPath(path);
     };
     Scene.prototype.getBackgroundTile = function(x, y) {
-      return sUtils.choice(this.style.basicTerrain);
+      var tiles = this.style.basicTerrain;
+      return tiles[(x + y + Math.floor(x / 2) * Math.floor(y / 3)) % tiles.length];
     }
     
     this.Scene = Scene;

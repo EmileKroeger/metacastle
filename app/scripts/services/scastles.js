@@ -8,15 +8,11 @@
  * Service in the metacastleApp.
  */
 angular.module('metacastleApp')
-  .service('sCastles', function sCastles(sStyles, sBuildings) {
+  .service('sCastles', function sCastles(sStyles, sBuildings, sUtils) {
     // AngularJS will instantiate a singleton by calling "new" on this function
-    
-    function choice(array) {
-      return array[Math.floor(Math.random() * array.length)];
-    }
-    
+        
     var getDungeon = function() {
-      return choice([
+      return sUtils.choice([
         sBuildings.TowerCornerBuilding,
         sBuildings.TowerCornerBuilding,
         sBuildings.TallDungeon,
@@ -34,23 +30,47 @@ angular.module('metacastleApp')
         return sBuildings.TowerCornerBuilding;
       }
       */
+    };
+    
+    function getMaterialStyle() {
+      return sUtils.choice([
+        sStyles.yellowStyle,
+        sStyles.greyStyle,
+        sStyles.blueStyle,
+        sStyles.brownStyle,
+      ]);
+    };
+    
+    function getDungeonStyle() {
+      return sUtils.choice([
+        sStyles.dungeonStyle,
+        sStyles.templarDungeonStyle,
+      ]);
+    };
+    
+    function getFlagStyle() {
+      return sUtils.choice([
+        sStyles.redFlagsStyle,
+        sStyles.blueFlagsStyle,
+        sStyles.greenFlagsStyle,
+      ]);
     }
     
     this.smallCastle = function(scene) {
       scene.wid = 30;
       scene.hei = 30;
+      scene.addStyle(getMaterialStyle());
+      scene.addStyle(getFlagStyle());
       var wallPath = [
         [5,  18, sBuildings.ThinTower],
-        [14, 18, getDungeon()],
+        [14, 18, getDungeon(), getDungeonStyle()],
         //[14, 18, sBuildings.TallDungeon],
         [24, 18, sBuildings.ThinTower],
         [24, 4,  sBuildings.ThinTower],
         [14, 4,  sBuildings.Entrance],
         [5,  4,  sBuildings.ThinTower],
       ];
-      var style = sStyles.yellowStyle;
-      scene.addWall(wallPath, style);
-      scene.style = style;
+      scene.addWall(wallPath);
     }
     this.bigCourtyardCastle = function(scene) {
       scene.wid = 70;

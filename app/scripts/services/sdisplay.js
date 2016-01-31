@@ -404,6 +404,10 @@ angular.module('metacastleApp')
   this.greyCrossSlit = new SingleTile(844);
   this.greyRoundedWindow = new SingleTile(846)
   this.greyGothicWindow = new SingleTile(847)
+  this.yellowSlit = new SingleTile(945);
+  this.yellowCrossSlit = new SingleTile(944);
+  this.yellowRoundedWindow = new SingleTile(946)
+  this.yellowGothicWindow = new SingleTile(947)
   // Doors
   this.roundedWoodenDoor = new SingleTile(32);
   this.roundedWoodenGratedDoor = new SingleTile(33);
@@ -422,7 +426,7 @@ angular.module('metacastleApp')
   this.yellowStairsDown = new SingleTile(1815);
   this.greyStairsDown = new SingleTile(1822);
   this.blueStairsDown = new SingleTile(1829);
-  this.browsnStairsDown = new SingleTile(1836);
+  this.brownStairsDown = new SingleTile(1836);
   
   // Misc. Items
   this.anvil = new SingleTile(15);
@@ -480,8 +484,8 @@ angular.module('metacastleApp')
     if (surface.wid > 2) {
       style.gate.render(middleLeft, surface.y);
       // Parallel banners
-      style.tallBanner.render(middleLeft-1, surface.y + 2);
-      style.tallBanner.render(middleLeft+2, surface.y + 2);
+      style.fancyTallBanner.render(middleLeft-1, surface.y + 2);
+      style.fancyTallBanner.render(middleLeft+2, surface.y + 2);
       style.window.render(middleLeft, surface.y + 3);
       style.window.render(middleLeft + 1, surface.y + 3);
     }

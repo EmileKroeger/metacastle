@@ -16,7 +16,7 @@ angular.module('metacastleApp')
       platformMaterial: sMaterials.BLUEPLATFORM,
       platformTile: 9,
       groundTile: 106, // dirt
-      basicTerrain: [5], // grass
+      basicTerrain: [5, 105], // grass
       groundDecoration: sDecorations.randomWorkItem,
       //groundTile: 703, // red flowers
       //groundTile: 1608, // rock
@@ -27,7 +27,8 @@ angular.module('metacastleApp')
       towerHeight: 10,
       curtainWallHeight: 5,
       towerFunc: sBuildings.thinTower,
-      tallBanner: sDecorations.tallGreenBanner,
+      fancyTallBanner: sDecorations.tallRedBannerCross,
+      basicTallBanner: sDecorations.tallRedBanner,
       towerDecorators: {
         facade: sDecorators.highWindowsDecorator,
         platform: sDecorators.trapdoorDecorator,
@@ -42,12 +43,28 @@ angular.module('metacastleApp')
       dungeonFunc: sBuildings.towerCornerBuilding,
     };
     
+    this.redFlagsStyle = {
+      fancyTallBanner: sDecorations.tallRedBannerCross,
+      basicTallBanner: sDecorations.tallRedBanner,
+    }
+
+    this.greenFlagsStyle = {
+      fancyTallBanner: sDecorations.tallGreenBannerCross,
+      basicTallBanner: sDecorations.tallGreenBanner,
+    }
+    
+    this.blueFlagsStyle = {
+      fancyTallBanner: sDecorations.tallBlueBannerCross,
+      basicTallBanner: sDecorations.tallBLueBanner,
+    }
+    
     this.yellowStyle = {
       wallMaterial: sMaterials.YELLOWWALLS,
       crenelationMaterial: sMaterials.YELLOWCRENELATION,
       platformTile: 207,
       trapdoor: sDecorations.yellowStairsDown,
       basicTerrain: [8, 108], // sand
+      window: sDecorations.yellowSlit,
     }
     
     this.greyStyle = {
@@ -69,6 +86,8 @@ angular.module('metacastleApp')
       crenelationMaterial: sMaterials.BROWNCRENELATION,
       platformTile: 205,
       trapdoor: sDecorations.brownStairsDown,
+      basicTerrain: [8, 108], // sand
+      window: sDecorations.yellowSlit,
     }
     
     this.lowStyle = {
