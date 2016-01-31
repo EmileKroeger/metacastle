@@ -279,7 +279,7 @@ angular.module('metacastleApp')
       
     }
     Scene.prototype.render = function() {
-      this.renderers.sort(function(bA, bB) {return bA.y < bB.y;});
+      this.renderers.sort(function(bA, bB) {return bB.y - bA.y;});
       this.renderers.forEach(function(renderer) {
         renderer.render();
       });
