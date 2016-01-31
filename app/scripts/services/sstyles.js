@@ -55,7 +55,7 @@ angular.module('metacastleApp')
     
     this.blueFlagsStyle = {
       fancyTallBanner: sDecorations.tallBlueBannerCross,
-      basicTallBanner: sDecorations.tallBLueBanner,
+      basicTallBanner: sDecorations.tallBlueBanner,
     }
     
     this.yellowStyle = {

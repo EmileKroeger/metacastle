@@ -77,6 +77,7 @@ angular.module('metacastleApp')
         sDecorators.manyHighWindowsDecorator,
         sDecorators.highWindowsDecorator,
         sDecorators.highWindowsDecorator,
+        sDecorators.bannersAndWindowsDecorators,
       ]);
       return {
         towerDecorators: {

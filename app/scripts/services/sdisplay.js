@@ -468,6 +468,23 @@ angular.module('metacastleApp')
       x += this.step;
     }
   };
+  
+  function BannersAndWindowsDecorators() {
+  }
+  BannersAndWindowsDecorators.prototype.render = function(style, surface) {
+    var x = surface.x + 1;
+    var y = surface.y + surface.hei - 2;
+    var x_max = surface.x + surface.wid - 2;
+    while (x <= x_max) {
+      if ((x - x_max) % 2 == 0 ) {
+        style.window.render(x, y);
+      } else {
+        style.basicTallBanner.render(x, y - 2);
+      }
+      x += 1;
+    }
+  };
+  this.bannersAndWindowsDecorators = new BannersAndWindowsDecorators();
 
   function TrapdoorDecorator() {
   }
