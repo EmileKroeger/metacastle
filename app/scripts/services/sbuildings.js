@@ -44,6 +44,26 @@ angular.module('metacastleApp')
         decorators.platform.render(style, topsurface);
       }
     }
+    this.addRoofedBuilding = function(style, x, y, wid, hei, roof, decorators) {
+      // Wall
+      var facade = {
+        x: x,
+        y: y,
+        wid: wid,
+        hei: hei,
+      }
+      style.wallMaterial.fillRect(facade)
+      var roof = {
+        x: x,
+        y: y + hei - 1,
+        wid: wid,
+        hei: roof,
+      }
+      style.roofMaterial.fillRect(roof);
+      if (decorators && decorators.facade) {
+        decorators.facade.render(style, facade);
+      }
+    }
     
     // Buildings - old-style
     
@@ -95,6 +115,17 @@ angular.module('metacastleApp')
           style.dungeonDecorators);
       };
     };
+    
+    this.House = function(cx, cy, style) {
+      this.x = cx;
+      this.y = cy - 3;
+      this.render = function() {
+        // TODO: add top towers, a bit complicated
+        sBuildings.addRoofedBuilding(style, this.x, this.y, 2, 2, 2,
+          style.houseDecorators);
+      };
+      
+    }
     
     this.TallDungeon = function(cx, cy, style) {
       this.x = cx - 3;

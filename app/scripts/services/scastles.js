@@ -13,6 +13,7 @@ angular.module('metacastleApp')
     // AngularJS will instantiate a singleton by calling "new" on this function
         
     var getDungeon = function() {
+      return sBuildings.House;
       return sUtils.choice([
         sBuildings.TowerCornerBuilding,
         sBuildings.TowerCornerBuilding,
@@ -21,16 +22,6 @@ angular.module('metacastleApp')
         //sBuildings.CrossDungeon, // Not quite ready
         sBuildings.BigAssZiggurat,
       ]);
-      /*
-      var flip = Math.floor(Math.random() * 3);
-      if (flip == 0) {
-        return sBuildings.BigAssZiggurat;
-      } else if (flip == 1) {
-        return sBuildings.CrossDungeon;
-      } else {
-        return sBuildings.TowerCornerBuilding;
-      }
-      */
     };
     
     function getMaterialStyle() {

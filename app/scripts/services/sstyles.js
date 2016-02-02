@@ -14,6 +14,7 @@ angular.module('metacastleApp')
       wallMaterial: sMaterials.BLUEWALLS,
       crenelationMaterial: sMaterials.BLUECRENELATION,
       platformMaterial: sMaterials.BLUEPLATFORM,
+      roofMaterial: sMaterials.brownPointyRoof,
       platformTile: 9,
       groundTile: 106, // dirt
       basicTerrain: [5, 105], // grass
@@ -39,6 +40,9 @@ angular.module('metacastleApp')
       },
       dungeonDecorators: {
         facade: sDecorators.windowedGateDecorator,
+      },
+      houseDecorators: {
+        facade: sDecorators.houseDecorator,
       },
       dungeonFunc: sBuildings.towerCornerBuilding,
     };

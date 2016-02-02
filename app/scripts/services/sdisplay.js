@@ -320,6 +320,33 @@ angular.module('metacastleApp')
       sDisplay.addTile(x, y, self.edgeMaterial[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
+  
+  function PointyRoofMaterial(topleftcode) {
+    this.tl = topleftcode;
+    this.ml = topleftcode + 100;
+    this.bl = topleftcode + 200;
+    this.tr = topleftcode + 1;
+    this.mr = topleftcode + 101;
+    this.br = topleftcode + 201;
+  }
+  PointyRoofMaterial.prototype.fillRect = function(surface) {
+    if (surface.wid != 2) {
+      throw new Error("Unexpected width: " + surface.wid)
+    }
+    sDisplay.addTile(surface.x, surface.y, this.bl);
+    sDisplay.addTile(surface.x + 1, surface.y, this.br);
+    var topY = surface.y + surface.hei - 1;
+    for (var y = surface.y + 1; y < topY; y++) {
+      sDisplay.addTile(surface.x, y, this.ml);
+      sDisplay.addTile(surface.x + 1, y, this.mr);
+    }
+    sDisplay.addTile(surface.x, topY, this.tl);
+    sDisplay.addTile(surface.x + 1, topY, this.tr);
+  }
+  this.yellowPointyRoof = new PointyRoofMaterial(2113);
+  this.brownPointyRoof = new PointyRoofMaterial(2120);
+  this.bluePointyRoof = new PointyRoofMaterial(2127);
+  this.beigePointyRoof = new PointyRoofMaterial(2134);
 
   
   function castleWallMaterial(topleft) {
@@ -547,6 +574,17 @@ angular.module('metacastleApp')
     }
   }
   this.manyWindowedGateDecorator = new ManyWindowedGateDecorator();
+  
+  function HouseDecorator() {
+  }
+  HouseDecorator.prototype.render = function(style, surface) {
+    //style.window.render(surface.x, surface.y);
+    sDisplay.addTile(surface.x, surface.y, 32);
+    //sDisplay.addTile(surface.x, surface.y, 745); // shutters
+    //sDisplay.addTile(surface.x+1, surface.y, 446);
+    sDisplay.addTile(surface.x+1, surface.y, 142);
+  }
+  this.houseDecorator = new HouseDecorator();
   
   function StuffDecorator(empties, decorations) {
     this.total = empties + decorations.length;
