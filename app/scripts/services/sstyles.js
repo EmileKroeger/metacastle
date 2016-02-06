@@ -14,7 +14,7 @@ angular.module('metacastleApp')
       wallMaterial: sMaterials.BLUEWALLS,
       crenelationMaterial: sMaterials.BLUECRENELATION,
       platformMaterial: sMaterials.BLUEPLATFORM,
-      roofMaterial: sMaterials.brownPointyRoof,
+      roofMaterial: sMaterials.brownFlattishRoof,
       platformTile: 9,
       groundTile: 106, // dirt
       basicTerrain: [5, 105], // grass

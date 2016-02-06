@@ -13,7 +13,8 @@ angular.module('metacastleApp')
     // AngularJS will instantiate a singleton by calling "new" on this function
         
     var getDungeon = function() {
-      return sBuildings.House;
+      // for tests:
+      //return sBuildings.House;
       return sUtils.choice([
         sBuildings.TowerCornerBuilding,
         sBuildings.TowerCornerBuilding,
