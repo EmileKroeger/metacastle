@@ -50,16 +50,21 @@ angular.module('metacastleApp')
     this.redFlagsStyle = {
       fancyTallBanner: sDecorations.tallRedBannerCross,
       basicTallBanner: sDecorations.tallRedBanner,
+      flowers: [sMaterials.REDFLOWERS, sMaterials.REDFLOWERS,
+        sMaterials.WHITEFLOWERS],
     }
 
     this.greenFlagsStyle = {
       fancyTallBanner: sDecorations.tallGreenBannerCross,
       basicTallBanner: sDecorations.tallGreenBanner,
+      flowers: [sMaterials.WHITEFLOWERS, sMaterials.BLUEFLOWERS],
     }
     
     this.blueFlagsStyle = {
       fancyTallBanner: sDecorations.tallBlueBannerCross,
       basicTallBanner: sDecorations.tallBlueBanner,
+      flowers: [sMaterials.BLUEFLOWERS, sMaterials.BLUEFLOWERS,
+        sMaterials.WHITEFLOWERS],
     }
     
     this.yellowStyle = {

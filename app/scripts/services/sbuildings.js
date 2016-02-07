@@ -329,7 +329,7 @@ angular.module('metacastleApp')
         return 2 + sUtils.pseudoRandomInt(2);
       }
       var style = sStyles.combine(style, this.style);
-      for (var y = surface.y; y < surface.y + surface.hei; y += 3) {
+      for (var y = surface.y; y < surface.y + surface.hei - 1; y += 3) {
         for (var x = surface.x; x < surface.x + surface.wid - 1; x += advance()) {
           var dy = sUtils.pseudoRandomInt(2);
           this.renderers.push(new buildingClass(x, y + dy, style));
