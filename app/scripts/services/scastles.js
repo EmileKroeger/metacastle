@@ -173,15 +173,16 @@ angular.module('metacastleApp')
         fillRectangle(scene, remains, false);
       } else {
         // TODO: simple flood fill.
+        scene.scatterBuildings(rectangle, sBuildings.House);
+        /*
         scene.renderers.push({
           x: rectangle.x,
           y: rectangle.y,
           render: function() {
-            console.debug("toto: render");
-            //sMaterials.BLUECRENELATION.fillRect(rectangle);
-            // TODO: render a bunch of houses.
+            sMaterials.BLUECRENELATION.fillRect(rectangle);
           }
         });
+        */
       }
     }
     

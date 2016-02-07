@@ -118,9 +118,8 @@ angular.module('metacastleApp')
     
     this.House = function(cx, cy, style) {
       this.x = cx;
-      this.y = cy - 3;
+      this.y = cy;
       this.render = function() {
-        // TODO: add top towers, a bit complicated
         sBuildings.addRoofedBuilding(style, this.x, this.y, 2, 2, 2,
           style.houseDecorators);
       };
@@ -262,11 +261,12 @@ angular.module('metacastleApp')
       }
     }
     
-    function makeNodeRenderer(style, nodeType, x, y) {
-      return new nodeType(x, y, style);
+    function makeNodeRenderer(style, nodeClass, x, y) {
+      return new nodeClass(x, y, style);
     }
 
     function makeCurtainWall(style, path) {
+      // returns a list of "renderer" objects
       var renderers = [];
       var prev = path[path.length - 1];
       path.forEach(function(node) {
@@ -297,15 +297,15 @@ angular.module('metacastleApp')
       this.style = sStyles.combine(style, this.style);
     };
     Scene.prototype.addWall = function(path, style) {
-      // TODO: keep track of "free" interior
       var style = sStyles.combine(style, this.style);
-      var insidePoints = [];
+      // 1) Fill and decorate ground
       sUtils.forTilesInside(path, function(x, y, angleCode) {
         sDisplay.addTile(x, y, style.groundTile);
         if (style.groundDecoration) {
           style.groundDecoration.render(x, y);
         }
       });
+      // 2) make walls and towers and the like
       this.renderers.push.apply(this.renderers, makeCurtainWall(style, path));
       
     }
@@ -322,6 +322,18 @@ angular.module('metacastleApp')
     Scene.prototype.getBackgroundTile = function(x, y) {
       var tiles = this.style.basicTerrain;
       return tiles[(x + y + Math.floor(x / 2) * Math.floor(y / 3)) % tiles.length];
+    }
+    Scene.prototype.scatterBuildings = function(surface, buildingClass, style) {
+      function advance() {
+        return 2 + sUtils.pseudoRandomInt(2);
+      }
+      var style = sStyles.combine(style, this.style);
+      for (var y = surface.y; y < surface.y + surface.hei; y += 3) {
+        for (var x = surface.x; x < surface.x + surface.wid - 1; x += advance()) {
+          var dy = sUtils.pseudoRandomInt(2);
+          this.renderers.push(new buildingClass(x, y + dy, style));
+        }
+      }
     }
     
     this.Scene = Scene;
