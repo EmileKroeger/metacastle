@@ -9,7 +9,7 @@
  */
 angular.module('metacastleApp')
   .service('sCastles', function sCastles(sStyles, sBuildings, sUtils,
-      sDecorators, sDecorations) {
+      sDecorators, sDecorations, sMaterials) {
     // AngularJS will instantiate a singleton by calling "new" on this function
         
     var getDungeon = function() {
@@ -142,6 +142,49 @@ angular.module('metacastleApp')
       ];
       scene.addWall(wallPath);
     }
+
+    function offsetPath(path, rectangle) {
+      path.forEach(function(item) {
+        item[0] += rectangle.x;
+        item[1] += rectangle.y;
+      });
+    }
+    
+    
+    function fillRectangle(scene, rectangle, include_keep) {
+      if (include_keep) {
+        var innerPath = [
+          [3, 20, sBuildings.ThinTower],
+          [17, 20, getDungeon(), getDungeonStyle()],
+          [30, 20, sBuildings.ThinTower],
+          [30, 4, sBuildings.ThinTower],
+          [17, 4, sBuildings.Entrance, getEntranceStyle()],
+          [3, 4, sBuildings.ThinTower],
+        ];
+        offsetPath(innerPath, rectangle);
+        scene.addWall(innerPath, sStyles.highStyle);
+        var used = 34;
+        var remains = {
+          x: rectangle.x + used,
+          y: rectangle.y,
+          wid: rectangle.wid - used,
+          hei: rectangle.hei,
+        }
+        fillRectangle(scene, remains, false);
+      } else {
+        // TODO: simple flood fill.
+        scene.renderers.push({
+          x: rectangle.x,
+          y: rectangle.y,
+          render: function() {
+            console.debug("toto: render");
+            //sMaterials.BLUECRENELATION.fillRect(rectangle);
+            // TODO: render a bunch of houses.
+          }
+        });
+      }
+    }
+    
     this.doubleWallCastle = function(scene) {
       scene.wid = 70;
       scene.hei = 45;
@@ -156,15 +199,13 @@ angular.module('metacastleApp')
         [5,  5,  sBuildings.ThinTower],
         [5,  19, sBuildings.ThinTower],
       ];
-      var innerPath = [
-        [20, 29, sBuildings.ThinTower],
-        [34, 29, getDungeon(), getDungeonStyle()],
-        [47, 29, sBuildings.ThinTower],
-        [47, 13, sBuildings.ThinTower],
-        [34, 13, sBuildings.Entrance, getEntranceStyle()],
-        [20, 13, sBuildings.ThinTower],
-      ]
       scene.addWall(outerPath, sStyles.lowStyle);
-      scene.addWall(innerPath, sStyles.highStyle);
+      var innerRectangle = {
+        x: 8,
+        y: 9,
+        wid: 52,
+        hei: 23,
+      }
+      fillRectangle(scene, innerRectangle, true);
     }
   });

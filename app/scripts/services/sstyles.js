@@ -100,6 +100,7 @@ angular.module('metacastleApp')
       towerDecorators: {
         platform: sDecorators.trapdoorDecorator,
       },
+      groundDecoration: null,
     };
     
     this.highStyle = {

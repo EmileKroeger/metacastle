@@ -317,7 +317,6 @@ angular.module('metacastleApp')
       
     }
     Scene.prototype.fillPath = function(path, material) {
-      // TODO
       material.fillPath(path);
     };
     Scene.prototype.getBackgroundTile = function(x, y) {
