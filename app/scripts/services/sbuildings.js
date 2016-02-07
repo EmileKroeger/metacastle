@@ -120,7 +120,8 @@ angular.module('metacastleApp')
       this.x = cx;
       this.y = cy;
       this.render = function() {
-        sBuildings.addRoofedBuilding(style, this.x, this.y, 2, 2, 2,
+        var hei = sUtils.choice([2, 2, 3]);
+        sBuildings.addRoofedBuilding(style, this.x, this.y, 2, hei, 2,
           style.houseDecorators);
       };
       

@@ -605,11 +605,26 @@ angular.module('metacastleApp')
   function HouseDecorator() {
   }
   HouseDecorator.prototype.render = function(style, surface) {
-    //style.window.render(surface.x, surface.y);
     sDisplay.addTile(surface.x, surface.y, 32);
     //sDisplay.addTile(surface.x, surface.y, 745); // shutters
+    var windowtile = sUtils.choice([
+      // Square brown windows
+      444, 446, 142, 242,
+      // Round brown windows
+      44, 45, 46, 47, 48,
+      // Shuttered window
+      746,
+    ]);
     //sDisplay.addTile(surface.x+1, surface.y, 446);
-    sDisplay.addTile(surface.x+1, surface.y, 142);
+    if (surface.hei == 2) {
+      sDisplay.addTile(surface.x+1, surface.y, windowtile);
+    } else if (surface.hei == 3) {
+      sDisplay.addTile(surface.x,   surface.y+1, windowtile);
+      sDisplay.addTile(surface.x+1, surface.y+1, windowtile);
+    } else {
+      console.log("WARNING: height not handled, house will be empty.")
+    }
+    
   }
   this.houseDecorator = new HouseDecorator();
   

@@ -150,7 +150,6 @@ angular.module('metacastleApp')
       });
     }
     
-    
     function fillRectangle(scene, rectangle, include_keep) {
       if (include_keep) {
         var innerPath = [
@@ -172,17 +171,7 @@ angular.module('metacastleApp')
         }
         fillRectangle(scene, remains, false);
       } else {
-        // TODO: simple flood fill.
         scene.scatterBuildings(rectangle, sBuildings.House);
-        /*
-        scene.renderers.push({
-          x: rectangle.x,
-          y: rectangle.y,
-          render: function() {
-            sMaterials.BLUECRENELATION.fillRect(rectangle);
-          }
-        });
-        */
       }
     }
     
