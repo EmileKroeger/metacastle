@@ -605,8 +605,8 @@ angular.module('metacastleApp')
   function HouseDecorator() {
   }
   HouseDecorator.prototype.render = function(style, surface) {
-    sDisplay.addTile(surface.x, surface.y, 32);
-    //sDisplay.addTile(surface.x, surface.y, 745); // shutters
+    var doorX = sUtils.choice([0, 1]);
+    sDisplay.addTile(surface.x + doorX, surface.y, 32);
     var windowtile = sUtils.choice([
       // Square brown windows
       444, 446, 142, 242,
@@ -615,9 +615,8 @@ angular.module('metacastleApp')
       // Shuttered window
       746,
     ]);
-    //sDisplay.addTile(surface.x+1, surface.y, 446);
     if (surface.hei == 2) {
-      sDisplay.addTile(surface.x+1, surface.y, windowtile);
+      sDisplay.addTile(surface.x+1-doorX, surface.y, windowtile);
     } else if (surface.hei == 3) {
       sDisplay.addTile(surface.x,   surface.y+1, windowtile);
       sDisplay.addTile(surface.x+1, surface.y+1, windowtile);
