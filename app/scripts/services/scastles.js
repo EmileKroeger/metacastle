@@ -267,18 +267,10 @@ angular.module('metacastleApp')
       scene.scatterBuildings(rect, sBuildings.House);
     }
     
-    function nibble(rect) {
-      return {
-        x: rect.x + 1,
-        y: rect.y + 1,
-        wid: rect.wid - 2,
-        hei: rect.hei - 2,
-      };
-    }
     
     function populateWithFlowers(scene, rect) {
       var flowers = sUtils.choice(scene.style.flowers);
-      flowers.fillRect(nibble(rect));
+      flowers.fillRect(sUtils.nibble(rect));
     }
     
     function transpose(rect) {
@@ -349,5 +341,17 @@ angular.module('metacastleApp')
           populateWithHouses(scene, rect);
         });
       }
+    }
+    this.garden = function(scene) {
+      scene.wid = 30;
+      scene.hei = 30;
+      addStyles(scene);
+      var gardenRect = {
+        x: 1,
+        y: 1,
+        wid: 28,
+        hei: 28,
+      }
+      populateWithFlowers(scene, gardenRect);
     }
   });

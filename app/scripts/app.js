@@ -30,6 +30,9 @@ angular
       .when('/large/', {
         templateUrl: 'views/main.html', 
         controller: 'MainCtrl'})
+      .when('/garden/', {
+        templateUrl: 'views/main.html', 
+        controller: 'MainCtrl'})
       .when('/debug/', {
         templateUrl: 'views/debug.html', 
         controller: 'MainCtrl'})

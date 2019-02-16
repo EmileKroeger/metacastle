@@ -1,7 +1,7 @@
 'use strict';
 angular.module('metacastleApp')
   .controller('MainCtrl', function ($scope, $routeParams, sUtils, sDisplay,
-      sBuildings, sBuildingRenderers, sStyles, sMaterials, sCastles) {
+      sBuildings, sBuildingRenderers, sStyles, sMaterials, sCastles, sGarden) {
     $scope.range = sUtils.range;
     $scope.getTilemapTile = function(x, y) {
       // Return the tile code from the same place
@@ -17,10 +17,12 @@ angular.module('metacastleApp')
     if (hash == "#/large/") {
       sCastles.doubleWallCastle(scene);
       //sCastles.bigCourtyardCastle(scene);
+    } else if ((hash == "#/garden/") || (hash == "#/debug/")) {
+      sGarden.garden(scene);
     } else if ((hash == "#/debug/") || (hash == "#/small/")) {
       sCastles.smallCastle(scene);
     } else if(false) {
-      // EXperiments
+      // Experiments
       scene.wid = 70;
       scene.hei = 45;
       var path = [
