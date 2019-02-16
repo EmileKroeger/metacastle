@@ -16,6 +16,9 @@ angular
     'ngSanitize',
     'ngRoute',
   ])
+  .config(['$locationProvider', function($locationProvider) {
+     $locationProvider.hashPrefix('');
+   }])
   .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/', {
