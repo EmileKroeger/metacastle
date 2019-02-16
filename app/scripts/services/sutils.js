@@ -174,6 +174,7 @@ angular.module('metacastleApp')
     }
   };
   this.nibble = function(rect) {
+      //Make a slightly smaller rectangl
       return {
         x: rect.x + 1,
         y: rect.y + 1,
