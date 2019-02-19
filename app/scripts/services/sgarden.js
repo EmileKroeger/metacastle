@@ -32,37 +32,12 @@ angular.module('metacastleApp')
           //scene.scatterBuildings(rect, sBuildings.House);
           var flowers = sUtils.choice(scene.style.flowers);
           //flowers.fillRect(sUtils.nibble(gardenRect));
-          function makeCross(x0, y0, midx, midy, ex, ey) {
-            var xa = x0;
-            var xb = x0 + ex;
-            var xc = x0 + ex + midx;
-            var xd = x0 + ex + midx + ex;
-            var ya = y0;
-            var yb = y0 + ey;
-            var yc = y0 + ey + midy;
-            var yd = y0 + ey + midy + ey;
-            return [
-              [xa, yb],
-              [xa, yc],
-              [xb, yc],
-              [xb, yd],
-              [xc, yd],
-              [xc, yc],
-              [xd, yc],
-              [xd, yb],
-              [xc, yb],
-              [xc, ya],
-              [xb, ya],
-              [xb, yb],
-            ];
-          }
-          var gardenPath = makeCross(5, 5, 10, 10, 3, 3);
-          //flowers.drawEdge(gardenPath);
-          sMaterials.WHITEFLOWERS.fillPath(gardenPath);
-          sMaterials.REDFLOWERS.drawEdge(gardenPath);
-          var gardenPath = makeCross(7, 7, 6, 6, 3, 3);
-          //flowers.drawEdge(gardenPath);
-          sMaterials.WHITEFLOWERS.fillPath(gardenPath);
-          sMaterials.BLUEFLOWERS.drawEdge(gardenPath);
+          var gardenPath = sUtils.makeCrossPath(5, 5, 10, 10, 3, 3);
+          sMaterials.BLUEWHITEFLOWERS.fillPath(gardenPath);
+          var gardenPath = sUtils.makeCrossPath(7, 7, 6, 6, 3, 3);
+          sMaterials.WATER_STONE.fillPath(gardenPath);
+          var gardenPath = sUtils.makeCrossPath(9, 9, 2, 2, 3, 3);
+          sMaterials.REDWHITEFLOWERS.fillPath(gardenPath);
+          //sMaterials.BLUEFLOWERS.drawEdge(gardenPath);
         }
       });

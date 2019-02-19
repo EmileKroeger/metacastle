@@ -182,5 +182,29 @@ angular.module('metacastleApp')
         hei: rect.hei - 2,
       };
     }
+    this.makeCrossPath = function(x0, y0, midx, midy, ex, ey) {
+      var xa = x0;
+      var xb = x0 + ex;
+      var xc = x0 + ex + midx;
+      var xd = x0 + ex + midx + ex;
+      var ya = y0;
+      var yb = y0 + ey;
+      var yc = y0 + ey + midy;
+      var yd = y0 + ey + midy + ey;
+      return [
+        [xa, yb],
+        [xa, yc],
+        [xb, yc],
+        [xb, yd],
+        [xc, yd],
+        [xc, yc],
+        [xd, yc],
+        [xd, yb],
+        [xc, yb],
+        [xc, ya],
+        [xb, ya],
+        [xb, yb],
+      ];
+    }
 
 })

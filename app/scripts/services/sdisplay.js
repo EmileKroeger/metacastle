@@ -113,7 +113,11 @@ angular.module('metacastleApp')
       [surface.x + surface.wid, surface.y],
     ];
   }
-  
+
+  EdgedMaterial.prototype.withCenter = function(mm_code) {
+    this.mm = mm_code;
+    return this;
+  };
   EdgedMaterial.prototype.fillRect = function(surface) {
     // TODO: better
     addRect(surface.x, surface.y, surface.wid, surface.hei, this);
@@ -242,9 +246,12 @@ angular.module('metacastleApp')
   this.BLUEPLATFORM = new EdgeAndTileMaterial(this.BLUECRENELATION, 9);
   this.WATER_DIRT = new EdgedMaterial(0, 100);
   this.WATER_STONE = new EdgedMaterial(300);
+  // FLOWERS
   this.REDFLOWERS = new EdgedMaterial(600);
+  this.REDWHITEFLOWERS = (new EdgedMaterial(600)).withCenter(1003);
   this.WHITEFLOWERS = new EdgedMaterial(900);
   this.BLUEFLOWERS = new EdgedMaterial(1200);
+  this.BLUEWHITEFLOWERS = (new EdgedMaterial(1200)).withCenter(1003);
   this.GRASS = new EdgedMaterial(1500);
   this.DIRT = new EdgedMaterial(905);
   this.STONE = new EdgedMaterial(1505);
