@@ -121,6 +121,74 @@ angular.module('metacastleApp')
       }
     });
   };
+  this.forTilesInRegion = function(map, regionCode, callback) {
+    var wid = map.length;
+    var hei = map[0].length;
+    function isInRegion(x, y) {
+      if ((0 < x) || (x >= wid)) {
+        return false;
+      } else if ((0 < y) || (y >= wid)) {
+        return false;
+      } else {
+        return map[x][y] == regionCode;
+      }
+    }
+    for (var x = 0; x < wid; x++) {
+      for (var y = 0; y < hei; y++) {
+        if (isInRegion(x, y)) {
+          var belowIn = isInRegion(x, y - 1);
+          var aboveIn = isInRegion(x, y + 1);
+          var leftIn = isInRegion(x - 1, y);
+          var rightIn = isInRegion(x + 1, y);
+          if (!aboveIn) {
+            // We're in the top row
+            var code = "mm"
+            if (!leftIn) {
+              // top left ... or unhandled case
+              code = "tl";
+            } else if (rightIn) {
+              code = "tm";
+            } else {
+              code = "tr";
+            }
+          } else if (!belowIn) {
+            // Bottom row
+            if (!leftIn) {
+              // bottom left ... or unhandled case
+              code = "bl";
+            } else if (rightIn) {
+              code = "bm";
+            } else {
+              code = "br";
+            }
+          } else if (!leftIn) {
+            code = "ml";
+          } else if (!rightIn) {
+            code = "mr";
+          } else {
+            // Left, right, above, below are all in
+            // But ... we need to check corners
+            if (!isInRegion(x-1, y-1)) {
+              code = "in_bl"
+            } else if (!isInRegion(x+1, y-1)) {
+              code = "in_br"
+            } else if (!isInRegion(x-1, y+1)) {
+              code = "in_tl"
+            } else if (!isInRegion(x+1, y+1)) {
+              code = "in_tr"
+            } else {
+              code = "mm"
+            }
+          }
+          callback(x, y, code);
+          // (end of loop)
+        }
+      }
+    }
+    
+    
+  }
+
   this.getInsideOffset = function(angleCode) {
     // Given the angle type, get a point that's inside.
     if (angleCode[1] == "r") {

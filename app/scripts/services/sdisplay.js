@@ -146,6 +146,12 @@ angular.module('metacastleApp')
       sDisplay.addTile(x, y, self[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
+  EdgedMaterial.prototype.fillRegion = function(map, regionCode) {
+    var self = this;
+    sUtils.forTilesInRegion(map, regionCode, function(x, y, tilepos) {
+      sDisplay.addTile(x, y, self[tilepos]);
+    });
+  }
   
   function EdgeAndTileMaterial(edgeMaterial, tilecode) {
     this.edgeMaterial = edgeMaterial;
@@ -159,6 +165,13 @@ angular.module('metacastleApp')
       sDisplay.addTile(x, y, self.edgeMaterial[ANGLECODE_TO_TILEPOS[angleCode]]);
     });
   };
+  EdgeAndTileMaterial.prototype.fillRegion = function(map, regionCode) {
+    var self = this;
+    sUtils.forTilesInRegion(map, regionCode, function(x, y, tilepos) {
+      sDisplay.addTile(x, y, self.tilecode);
+      sDisplay.addTile(x, y, self[tilepos]);
+    });
+  }
   
   function PointyRoofMaterial(topleftcode) {
     this.tl = topleftcode;
