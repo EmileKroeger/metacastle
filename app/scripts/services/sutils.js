@@ -125,9 +125,9 @@ angular.module('metacastleApp')
     var wid = map.length;
     var hei = map[0].length;
     function isInRegion(x, y) {
-      if ((0 < x) || (x >= wid)) {
+      if ((0 > x) || (x >= wid)) {
         return false;
-      } else if ((0 < y) || (y >= wid)) {
+      } else if ((0 > y) || (y >= hei)) {
         return false;
       } else {
         return map[x][y] == regionCode;
@@ -184,10 +184,8 @@ angular.module('metacastleApp')
           // (end of loop)
         }
       }
-    }
-    
-    
-  }
+    }  
+  };
 
   this.getInsideOffset = function(angleCode) {
     // Given the angle type, get a point that's inside.
