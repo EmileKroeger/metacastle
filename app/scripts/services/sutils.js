@@ -169,13 +169,13 @@ angular.module('metacastleApp')
             // Left, right, above, below are all in
             // But ... we need to check corners
             if (!isInRegion(x-1, y-1)) {
-              code = "in_bl"
-            } else if (!isInRegion(x+1, y-1)) {
-              code = "in_br"
-            } else if (!isInRegion(x-1, y+1)) {
-              code = "in_tl"
-            } else if (!isInRegion(x+1, y+1)) {
               code = "in_tr"
+            } else if (!isInRegion(x+1, y-1)) {
+              code = "in_tl"
+            } else if (!isInRegion(x-1, y+1)) {
+              code = "in_br"
+            } else if (!isInRegion(x+1, y+1)) {
+              code = "in_bl"
             } else {
               code = "mm"
             }

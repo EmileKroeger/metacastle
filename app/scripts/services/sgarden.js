@@ -176,18 +176,18 @@ angular.module('metacastleApp')
           var grid = new sShapes.ShapeGrid(scene.wid, scene.hei);
           var shape = new sShapes.Shape(grid, 0);
           /*
-          //shape.quarterField(scene.wid, scene.hei, cx, cy, PLACEHOLDERS);
+          */
           var cx = 14;
           var cy = 15;
+          shape.quarterField(scene.wid, scene.hei, cx, cy, [0, 1, 2]);
+          shape.addCross(cx, cy, 2, 4, 0)
           shape.addCross(cx, cy, 2, 3, 109)
-          //shape.addCross(cx, cy, 2, 2, 2203)
           shape.addCross(cx, cy, 2, 1, 1903)
-          sMaterials.BLUEWHITEFLOWERS.fillRegion(grid.map, 109);
-          sMaterials.WATER_STONE.fillRegion(grid.map, 1903);
-          //sMaterials.REDWHITEFLOWERS.fillPath(gardenPath);
-          */
-          shape.addRect(4, 5, 8, 7, 109);
+          sMaterials.BLUEWHITEFLOWERS.fillRegion(grid.map, 1903);
           sMaterials.WATER_STONE.fillRegion(grid.map, 109);
+          //sMaterials.GRASS.fillRegion(grid.map, 0);
+          sMaterials.REDFLOWERS.fillRegion(grid.map, 1);
+          sMaterials.WHITEFLOWERS.fillRegion(grid.map, 2);
         }
         this.garden = this.shapeGarden;
 
