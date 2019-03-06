@@ -74,15 +74,25 @@ angular.module('metacastleApp')
       this.addRect(cx-shorthalf, cy-edge, rectshort, rectlong, tile);
     }
     Shape.prototype.addFeature = function(featureDef) {
+      var cx = featureDef.cx;
+      var cy = featureDef.cy;
       if (featureDef.type == "circle") {
-        var cx = featureDef.cx;
-        var cy = featureDef.cy;
         var layers = featureDef.layers;
         // Go through them backwards
         for (var i = 0; i < layers.length; i++) {
           var radius = layers.length - i;
           this.addCross(cx, cy, 2, radius, layers[i]);
         }
+      } else if (featureDef.type == "rectangle") {
+        var layers = featureDef.layers;
+        // Go through them backwards
+        for (var i = 0; i < layers.length; i++) {
+          var radius = layers.length - i;
+          var lenX = radius + featureDef.extra_x;
+          var lenY = radius + featureDef.extra_y;
+          this.addRect(cx - lenX, cy  - lenY, 2 * lenX + 1, 2 * lenY + 1, layers[i]);
+        }
+        
       }
     }
 
@@ -158,6 +168,30 @@ angular.module('metacastleApp')
         var DECORATION_C = 400
 
         this.rendererGarden = function(scene) {
+          var CIRCULAR_POND_WITH_ISLAND = {
+            type: "circle",
+            cx: 14,
+            cy: 15,
+            layers: [
+              GROUND,
+              WATER,
+              WATER,
+              DECORATION_C,
+            ]
+          };
+          var HORIZONTAL_POND_WITH_ISLAND = {
+            type: "rectangle",
+            cx: 14,
+            cy: 15,
+            extra_x: 2,
+            extra_y: 0,
+            layers: [
+              GROUND,
+              WATER,
+              WATER,
+              DECORATION_C,
+            ]
+          };
           var CROSS_DEF = {
             wid: 30,
             hei: 30,
@@ -169,17 +203,7 @@ angular.module('metacastleApp')
               type_b: DECORATION_B,
             },
             features: [
-              {
-                type: "circle",
-                cx: 14,
-                cy: 15,
-                layers: [
-                  GROUND,
-                  WATER,
-                  WATER,
-                  DECORATION_C,
-                ]
-              },
+              HORIZONTAL_POND_WITH_ISLAND,
             ],
             materials: {
               [WATER]: sMaterials.WATER_STONE,
