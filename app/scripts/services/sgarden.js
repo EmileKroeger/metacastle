@@ -93,8 +93,6 @@ angular.module('metacastleApp')
           scene.hei = 30;
           var grid = new sShapes.ShapeGrid(scene.wid, scene.hei);
           var shape = new sShapes.Shape(grid, 0);
-          /*
-          */
           var cx = 14;
           var cy = 15;
           shape.quarterField(scene.wid, scene.hei, cx, cy, [0, 1, 2]);
@@ -107,7 +105,63 @@ angular.module('metacastleApp')
           sMaterials.REDFLOWERS.fillRegion(grid.map, 1);
           sMaterials.WHITEFLOWERS.fillRegion(grid.map, 2);
         }
-        this.garden = this.shapeGarden;
+        //this.garden = this.shapeGarden;
+        
+        function createGrid(definition) {}
+        
+        function render(definition, scene) {
+          scene.wid = definition.wid;
+          scene.hei = definition.hei;
+          var grid = new sShapes.ShapeGrid(definition.wid, definition.hei);
+          var shape = new sShapes.Shape(grid, 0);
+          // 1) Carve the background
+          if (definition.background) {
+            var bg = definition.background;
+            if (bg.type == "quartered") {
+              shape.quarterField(definition.wid, definition.wid,
+                bg.cx, bg.cy, [0, 1, 2]);
+            }
+          }
+          // Add features
+          if (definition.features) {
+            for (var i = 0; i < definition.features.length; i++) {
+              var feature = definition.features[i];
+              if (feature.type == "circle") {
+                var cx = feature.cx;
+                var cy = feature.cy;
+                shape.addCross(cx, cy, 2, 4, 0);
+                shape.addCross(cx, cy, 2, 3, 109);
+                shape.addCross(cx, cy, 2, 1, 1903);
+              }
+            }
+          }
+          // Now render all this
+          sMaterials.REDFLOWERS.fillRegion(grid.map, 1);
+          sMaterials.WHITEFLOWERS.fillRegion(grid.map, 2);
+          sMaterials.WATER_STONE.fillRegion(grid.map, 109);
+          sMaterials.BLUEWHITEFLOWERS.fillRegion(grid.map, 1903);
+        }
+        
 
+        this.rendererGarden = function(scene) {
+          var CROSS_DEF = {
+            wid: 30,
+            hei: 30,
+            background: {
+              type: "quartered",
+              cx: 14,
+              cy: 15,
+            },
+            features: [
+              {
+                type: "circle",
+                cx: 14,
+                cy: 15,
+              },
+            ],
+          };
+          render(CROSS_DEF, scene);
+        };
+        this.garden = this.rendererGarden;
       });
       
