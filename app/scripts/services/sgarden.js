@@ -72,8 +72,21 @@ angular.module('metacastleApp')
       var rectshort = 2 * shorthalf + 1;
       this.addRect(cx-edge, cy-shorthalf, rectlong, rectshort, tile);
       this.addRect(cx-shorthalf, cy-edge, rectshort, rectlong, tile);
-      //addRect(cx-edge, cy-shorthalf, 2 * edge + 1, 2 * shorthalf + 1, tile);
     }
+    Shape.prototype.addFeature = function(featureDef) {
+      if (featureDef.type == "circle") {
+        var cx = featureDef.cx;
+        var cy = featureDef.cy;
+        var layers = featureDef.layers;
+        // Go through them backwards
+        for (var i = 0; i < layers.length; i++) {
+          var radius = layers.length - i;
+          this.addCross(cx, cy, 2, radius, layers[i]);
+        }
+      }
+    }
+
+    // Define these as service globals
     this.ShapeGrid = ShapeGrid;
     this.Shape = Shape;
   })
@@ -107,11 +120,7 @@ angular.module('metacastleApp')
         }
         //this.garden = this.shapeGarden;
         
-        function createGrid(definition) {}
-        
-        function render(definition, scene) {
-          scene.wid = definition.wid;
-          scene.hei = definition.hei;
+        function createGrid(definition) {
           var grid = new sShapes.ShapeGrid(definition.wid, definition.hei);
           var shape = new sShapes.Shape(grid, 0);
           // 1) Carve the background
@@ -119,29 +128,34 @@ angular.module('metacastleApp')
             var bg = definition.background;
             if (bg.type == "quartered") {
               shape.quarterField(definition.wid, definition.wid,
-                bg.cx, bg.cy, [0, 1, 2]);
+                bg.cx, bg.cy, [0, bg.type_a, bg.type_b]);
             }
           }
           // Add features
           if (definition.features) {
             for (var i = 0; i < definition.features.length; i++) {
-              var feature = definition.features[i];
-              if (feature.type == "circle") {
-                var cx = feature.cx;
-                var cy = feature.cy;
-                shape.addCross(cx, cy, 2, 4, 0);
-                shape.addCross(cx, cy, 2, 3, 109);
-                shape.addCross(cx, cy, 2, 1, 1903);
-              }
+              shape.addFeature(definition.features[i]);
             }
           }
-          // Now render all this
-          sMaterials.REDFLOWERS.fillRegion(grid.map, 1);
-          sMaterials.WHITEFLOWERS.fillRegion(grid.map, 2);
-          sMaterials.WATER_STONE.fillRegion(grid.map, 109);
-          sMaterials.BLUEWHITEFLOWERS.fillRegion(grid.map, 1903);
+          return grid;
         }
         
+        function render(definition, scene) {
+          var grid = createGrid(definition);
+          scene.wid = definition.wid;
+          scene.hei = definition.hei;
+          // Now render all this
+          for (var tileType in definition.materials) {
+            definition.materials[tileType].fillRegion(grid.map, tileType);
+          }
+        }
+        
+        // UTILITY CONSTANTS
+        var GROUND = 0
+        var WATER = 100
+        var DECORATION_A = 200
+        var DECORATION_B = 300
+        var DECORATION_C = 400
 
         this.rendererGarden = function(scene) {
           var CROSS_DEF = {
@@ -151,14 +165,28 @@ angular.module('metacastleApp')
               type: "quartered",
               cx: 14,
               cy: 15,
+              type_a: DECORATION_A,
+              type_b: DECORATION_B,
             },
             features: [
               {
                 type: "circle",
                 cx: 14,
                 cy: 15,
+                layers: [
+                  GROUND,
+                  WATER,
+                  WATER,
+                  DECORATION_C,
+                ]
               },
             ],
+            materials: {
+              [WATER]: sMaterials.WATER_STONE,
+              [DECORATION_A]: sMaterials.WHITEFLOWERS,
+              [DECORATION_B]: sMaterials.BLUEFLOWERS,
+              [DECORATION_C]: sMaterials.BLUEWHITEFLOWERS,
+            }
           };
           render(CROSS_DEF, scene);
         };
