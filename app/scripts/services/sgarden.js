@@ -150,14 +150,51 @@ angular.module('metacastleApp')
           return grid;
         }
         
-        function render(definition, scene) {
-          var grid = createGrid(definition);
-          scene.wid = definition.wid;
-          scene.hei = definition.hei;
-          // Now render all this
-          for (var tileType in definition.materials) {
-            definition.materials[tileType].fillRegion(grid.map, tileType);
+        function render(recipe, scene) {
+          // First, create a grid
+          var grid = createGrid(recipe);
+          // Rendering: 1) Fill in scene parameters
+          scene.wid = recipe.wid;
+          scene.hei = recipe.hei;
+          // And 2) Fill in other stuff
+          for (var tileType in recipe.materials) {
+            recipe.materials[tileType].fillRegion(grid.map, tileType);
           }
+        }
+        
+        function interpretMetaRecipe(metaRecipe) {
+          // Recursive deep copy with interpretation
+          if (Array.isArray(metaRecipe)) {
+            var result = [];
+            for (var i=0; i < metaRecipe.length; i++) {
+              result.push(interpretMetaRecipe(metaRecipe[i]));
+            }
+            return result;
+            
+          } else if (typeof(metaRecipe) === "object") {
+            var recipe = {};
+            for (var key in metaRecipe) {
+              var value = interpretMetaRecipe(metaRecipe[key]);
+              if (key === "!MERGE") {
+                // Special: don't assign to value; instead, read many
+                for (var subkey in value) {
+                  recipe[subkey] = value[subkey];
+                }
+                
+              } else {
+                recipe[key] = value;
+              }
+            }
+            return recipe;
+          } else {
+            return angular.copy(metaRecipe);
+          }
+        }
+        
+        function oneOf(choices) {
+          // Simple version: random choice
+          return sUtils.choice(choices);
+          // (a more advanced version could be rerunnable)
         }
         
         // UTILITY CONSTANTS
@@ -170,8 +207,6 @@ angular.module('metacastleApp')
         this.rendererGarden = function(scene) {
           var CIRCULAR_POND_WITH_ISLAND = {
             type: "circle",
-            cx: 14,
-            cy: 15,
             layers: [
               GROUND,
               WATER,
@@ -181,10 +216,8 @@ angular.module('metacastleApp')
           };
           var HORIZONTAL_POND_WITH_ISLAND = {
             type: "rectangle",
-            cx: 14,
-            cy: 15,
-            extra_x: 2,
-            extra_y: 0,
+            extra_x: oneOf([1, 2]),
+            extra_y: oneOf([0, 1]),
             layers: [
               GROUND,
               WATER,
@@ -192,6 +225,28 @@ angular.module('metacastleApp')
               DECORATION_C,
             ]
           };
+          var MEDIUM_POND = {
+            type: "rectangle",
+            extra_x: oneOf([3, 4]),
+            extra_y: oneOf([2, 3]),
+            layers: [
+              GROUND,
+              WATER,
+            ]
+          };
+          var GARDENMATERIALS_BLUE = {
+              [WATER]: sMaterials.WATER_STONE,
+              [DECORATION_A]: sMaterials.WHITEFLOWERS,
+              [DECORATION_B]: sMaterials.BLUEFLOWERS,
+              [DECORATION_C]: sMaterials.BLUEWHITEFLOWERS,
+          };
+          var GARDENMATERIALS_RED = {
+              [WATER]: sMaterials.WATER_STONE,
+              [DECORATION_A]: sMaterials.WHITEFLOWERS,
+              [DECORATION_B]: sMaterials.REDFLOWERS,
+              [DECORATION_C]: sMaterials.WHITEFLOWERS,
+          };
+          // Meta cross def
           var CROSS_DEF = {
             wid: 30,
             hei: 30,
@@ -203,16 +258,23 @@ angular.module('metacastleApp')
               type_b: DECORATION_B,
             },
             features: [
-              HORIZONTAL_POND_WITH_ISLAND,
+              {
+                cx: 14,
+                cy: 15,
+                "!MERGE": oneOf([
+                  HORIZONTAL_POND_WITH_ISLAND,
+                  CIRCULAR_POND_WITH_ISLAND,
+                  MEDIUM_POND,
+                ]),
+              }
             ],
-            materials: {
-              [WATER]: sMaterials.WATER_STONE,
-              [DECORATION_A]: sMaterials.WHITEFLOWERS,
-              [DECORATION_B]: sMaterials.BLUEFLOWERS,
-              [DECORATION_C]: sMaterials.BLUEWHITEFLOWERS,
-            }
+            materials: oneOf([
+              GARDENMATERIALS_BLUE,
+              GARDENMATERIALS_RED,
+            ]),
           };
-          render(CROSS_DEF, scene);
+          var recipe = interpretMetaRecipe(CROSS_DEF);
+          render(recipe, scene);
         };
         this.garden = this.rendererGarden;
       });
