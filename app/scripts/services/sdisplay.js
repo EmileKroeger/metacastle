@@ -266,6 +266,8 @@ angular.module('metacastleApp')
   this.BLUEFLOWERS = new EdgedMaterial(1200);
   this.BLUEWHITEFLOWERS = (new EdgedMaterial(1200)).withCenter(1003);
   this.GRASS = new EdgedMaterial(1500);
+  this.REDGRASS = new EdgedMaterial(1800);
+  this.PURPLEGRASS = new EdgedMaterial(2100);
   this.DIRT = new EdgedMaterial(905);
   this.STONE = new EdgedMaterial(1505);
   this.SAND = new EdgedMaterial(2105);

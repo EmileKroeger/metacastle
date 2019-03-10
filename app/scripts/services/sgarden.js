@@ -244,6 +244,18 @@ angular.module('metacastleApp')
               [WATER]: sMaterials.WATER_STONE,
               [DECORATION_A]: sMaterials.WHITEFLOWERS,
               [DECORATION_B]: sMaterials.REDFLOWERS,
+              [DECORATION_C]: sMaterials.REDGRASS,
+          };
+          var GARDENMATERIALS_RED2 = {
+              [WATER]: sMaterials.WATER_STONE,
+              [DECORATION_A]: sMaterials.WHITEFLOWERS,
+              [DECORATION_B]: sMaterials.WHITEFLOWERS,
+              [DECORATION_C]: sMaterials.REDFLOWERS,
+          };
+          var GARDENMATERIALS_GRASSES = {
+              [WATER]: sMaterials.WATER_STONE,
+              [DECORATION_A]: sMaterials.REDGRASS,
+              [DECORATION_B]: sMaterials.PURPLEGRASS,
               [DECORATION_C]: sMaterials.WHITEFLOWERS,
           };
           // Meta cross def
@@ -271,6 +283,8 @@ angular.module('metacastleApp')
             materials: oneOf([
               GARDENMATERIALS_BLUE,
               GARDENMATERIALS_RED,
+              GARDENMATERIALS_RED2,
+              GARDENMATERIALS_GRASSES,
             ]),
           };
           var recipe = interpretMetaRecipe(CROSS_DEF);
