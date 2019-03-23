@@ -160,6 +160,17 @@ angular.module('metacastleApp')
           for (var tileType in recipe.materials) {
             recipe.materials[tileType].fillRegion(grid.map, tileType);
           }
+          // Special: fill some trees
+          for (var x = 0; x < scene.wid; x++) {
+            for (var y = 0; y < scene.wid; y++) {
+              if (grid.map[x][y] == 500) {// halftrees
+                if ((x + y) % 2 == 0) {
+                  console.log("TODO: add decoration at " + x);
+                  sDecorations.tall_tree.render(x, y);
+                }
+              }
+            }
+          }
         }
         
         function interpretMetaRecipe(metaRecipe) {
@@ -203,6 +214,7 @@ angular.module('metacastleApp')
         var DECORATION_A = 200
         var DECORATION_B = 300
         var DECORATION_C = 400
+        var HALFTREES = 500
 
         this.rendererGarden = function(scene) {
           var CIRCULAR_POND_WITH_ISLAND = {
@@ -232,6 +244,17 @@ angular.module('metacastleApp')
             layers: [
               GROUND,
               WATER,
+            ]
+          };
+          var PLACE_WITH_TREES = {
+            type: "rectangle",
+            extra_x: oneOf([3, 4]),
+            extra_y: oneOf([2, 3]),
+            layers: [
+              GROUND,
+              HALFTREES,
+              GROUND,
+              GROUND,
             ]
           };
           var GARDENMATERIALS_BLUE = {
@@ -274,9 +297,10 @@ angular.module('metacastleApp')
                 cx: 14,
                 cy: 15,
                 "!MERGE": oneOf([
-                  HORIZONTAL_POND_WITH_ISLAND,
-                  CIRCULAR_POND_WITH_ISLAND,
-                  MEDIUM_POND,
+                  PLACE_WITH_TREES,
+                  //HORIZONTAL_POND_WITH_ISLAND,
+                  //CIRCULAR_POND_WITH_ISLAND,
+                  //MEDIUM_POND,
                 ]),
               }
             ],

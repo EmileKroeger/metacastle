@@ -356,6 +356,9 @@ angular.module('metacastleApp')
   this.stump2 = new SingleTile(1953);
   this.stump_axe = new SingleTile(2153);
   this.woodpile = new SingleTile(2253);
+  // Nature
+  this.short_tree = new SingleTile(923)
+  this.tall_tree = new HighTile(1123, 2)
   
   this.workItems = [
     this.anvil, this.sign, this.woodbarrel, this.bandedbarrel,
