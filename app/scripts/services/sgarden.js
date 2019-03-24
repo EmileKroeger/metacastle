@@ -102,6 +102,17 @@ angular.module('metacastleApp')
           this.addRect(cx - lenX, cy  - lenY, 2 * lenX + 1, 2 * lenY + 1, layers[i]);
         }
       } else if (featureDef.type == "vertical") {
+        var layers = featureDef.layers;
+        // Go through layers backwards
+        for (var i = 0; i < layers.length; i++) {
+          var radius = layers.length - i;
+          var lenX = radius + featureDef.extra_x;
+          var lenY = featureDef.half_y;
+          if (i > 0) {
+            lenY -= 1; // Special: the outermost layer always goes all the way around
+          }
+          this.addRect(cx - lenX, cy  - lenY, 2 * lenX + 1, 2 * lenY + 1, layers[i]);
+        }
       } else if (featureDef.type == "maze") {
       } else if (featureDef.type == "blobs") {
       }
@@ -228,7 +239,7 @@ angular.module('metacastleApp')
         var DECORATION_C = 400
         var TREE = 500
         var BUSH = 600
-        var WILDGRASS = 600
+        var WILDGRASS = 700
 
         this.rendererGarden = function(scene) {
           var CIRCULAR_POND_WITH_ISLAND = {
@@ -237,7 +248,7 @@ angular.module('metacastleApp')
               GROUND,
               WATER,
               WATER,
-              DECORATION_C,
+              oneOf([DECORATION_C, WILDGRASS]),
             ]
           };
           var HORIZONTAL_POND_WITH_ISLAND = {
@@ -248,7 +259,7 @@ angular.module('metacastleApp')
               GROUND,
               WATER,
               WATER,
-              DECORATION_C,
+              oneOf([DECORATION_C, WILDGRASS]),
             ]
           };
           var MEDIUM_POND = {
@@ -271,6 +282,29 @@ angular.module('metacastleApp')
               WILDGRASS,
             ]
           };
+          var VERTICAL_HALL = {
+            type: "vertical",
+            extra_x: oneOf([1, 2]),
+            half_y: oneOf([5, 6, 7]),
+            layers: [
+              GROUND,
+              [GROUND, TREE],
+              GROUND,
+              oneOf([GROUND, GROUND, WATER, DECORATION_C]),
+            ]
+          };
+          var DOUBLE_VERTICAL_HALL = {
+            type: "vertical",
+            extra_x: oneOf([1, 2]),
+            half_y: oneOf([5, 6, 7]),
+            layers: [
+              GROUND,
+              [GROUND, TREE],
+              GROUND,
+              [GROUND, oneOf([TREE, BUSH])],
+              GROUND,
+            ]
+          };
           var GARDENMATERIALS_BLUE = {
               [WATER]: sMaterials.WATER_STONE,
               [DECORATION_A]: sMaterials.WHITEFLOWERS,
@@ -281,7 +315,7 @@ angular.module('metacastleApp')
               [WATER]: sMaterials.WATER_STONE,
               [DECORATION_A]: sMaterials.WHITEFLOWERS,
               [DECORATION_B]: sMaterials.REDFLOWERS,
-              [DECORATION_C]: sMaterials.REDGRASS,
+              [DECORATION_C]: sMaterials.REDWHITEFLOWERS,
           };
           var GARDENMATERIALS_RED2 = {
               [WATER]: sMaterials.WATER_STONE,
@@ -312,9 +346,11 @@ angular.module('metacastleApp')
                 cy: 15,
                 "!MERGE": oneOf([
                   PLACE_WITH_TREES,
-                  //HORIZONTAL_POND_WITH_ISLAND,
-                  //CIRCULAR_POND_WITH_ISLAND,
-                  //MEDIUM_POND,
+                  VERTICAL_HALL,
+                  DOUBLE_VERTICAL_HALL,
+                  HORIZONTAL_POND_WITH_ISLAND,
+                  CIRCULAR_POND_WITH_ISLAND,
+                  MEDIUM_POND,
                 ]),
               }
             ],
@@ -326,7 +362,12 @@ angular.module('metacastleApp')
             ]),
             decorations: {
               //[HALFTREES]: sDecorations.random_bush,
-              [TREE]: sDecorations.tall_tree,
+              [TREE]: oneOf([
+                sDecorations.tall_tree,
+                sDecorations.tall_pine,
+                sDecorations.short_fruit_tree,
+                sDecorations.tall_fruit_tree,
+              ]),
               [BUSH]: sDecorations.random_bush,
               [WILDGRASS]: sDecorations.random_grass,
             }
