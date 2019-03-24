@@ -356,9 +356,39 @@ angular.module('metacastleApp')
   this.stump2 = new SingleTile(1953);
   this.stump_axe = new SingleTile(2153);
   this.woodpile = new SingleTile(2253);
-  // Nature
-  this.short_tree = new SingleTile(923)
-  this.tall_tree = new HighTile(1123, 2)
+  // Trees
+  this.short_tree = new SingleTile(913)
+  this.tall_tree = new HighTile(1113, 2)
+  this.short_red_tree = new SingleTile(914)
+  this.tall_red_tree = new HighTile(1114, 2)
+  this.short_blue_tree = new SingleTile(915)
+  this.tall_blue_tree = new HighTile(1115, 2)
+  this.short_pine = new SingleTile(916)
+  this.tall_pine = new HighTile(1116, 2)
+  this.short_red_pine = new SingleTile(917)
+  this.tall_red_pine = new HighTile(1117, 2)
+  this.short_blue_pine = new SingleTile(918)
+  this.tall_blue_pine = new HighTile(1118, 2)
+  this.short_fruit_tree = new SingleTile(923)
+  this.tall_fruit_tree = new HighTile(1123, 2)
+
+  // Bushes
+  this.bush = new SingleTile(916)
+  this.red_bush = new SingleTile(917)
+  this.blue_bush = new SingleTile(918)
+  this.bush_redfruits = new SingleTile(942)
+  this.bush_purplefruits = new SingleTile(1142)
+  
+  // Single Flowers
+  this.blue_singleflower = new SingleTile(928)
+  this.red_singleflower = new SingleTile(929)
+  this.purple_singleflower = new SingleTile(930)
+  this.white_singleflower = new SingleTile(931)
+
+  this.cactus = new SingleTile(922)
+  this.grassblades2 = new SingleTile(1022)
+  this.grassblades3 = new SingleTile(1122)
+
   
   this.workItems = [
     this.anvil, this.sign, this.woodbarrel, this.bandedbarrel,

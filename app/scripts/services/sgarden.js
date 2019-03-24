@@ -166,7 +166,7 @@ angular.module('metacastleApp')
               if (grid.map[x][y] == 500) {// halftrees
                 if ((x + y) % 2 == 0) {
                   console.log("TODO: add decoration at " + x);
-                  sDecorations.tall_tree.render(x, y);
+                  sDecorations.tall_blue_pine.render(x, y);
                 }
               }
             }
