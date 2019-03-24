@@ -40,7 +40,11 @@ angular.module('metacastleApp')
     }
 
     Shape.prototype.set = function(x, y, tileDef) {
-      this.grid.set(x, y, tileDef);
+      if (Array.isArray(tileDef)) {
+        this.grid.set(x, y, tileDef[(x + y) % 2]);
+      } else {
+        this.grid.set(x, y, tileDef);
+      }
     }
     
     Shape.prototype.quarterField = function(wid, hei, cx, cy, tiles) {
@@ -169,26 +173,13 @@ angular.module('metacastleApp')
           }
           // Now, add decorations
           if (recipe.decorations != undefined) {
-            console.log("dealing with decorations");
-            console.log(recipe.decorations);
-            console.log(recipe.decorations[500]);
             for (var x = 0; x < scene.wid; x++) {
               for (var y = 0; y < scene.wid; y++) {
                 var tileType = grid.map[x][y];
                 var decoration = recipe.decorations[tileType];
                 if (decoration != undefined) {
-                  console.log("has deco");
                   decoration.render(x, y);
                 }
-
-                /*
-                if (grid.map[x][y] == 500) {// halftrees
-                  if ((x + y) % 2 == 0) {
-                    console.log("TODO: add decoration at " + x);
-                    sDecorations.tall_blue_pine.render(x, y);
-                  }
-                }
-                */
               }
             }
           }
@@ -235,7 +226,9 @@ angular.module('metacastleApp')
         var DECORATION_A = 200
         var DECORATION_B = 300
         var DECORATION_C = 400
-        var HALFTREES = 500
+        var TREE = 500
+        var BUSH = 600
+        var WILDGRASS = 600
 
         this.rendererGarden = function(scene) {
           var CIRCULAR_POND_WITH_ISLAND = {
@@ -273,9 +266,9 @@ angular.module('metacastleApp')
             extra_y: oneOf([2, 3]),
             layers: [
               GROUND,
-              HALFTREES,
+              [GROUND, TREE],
               GROUND,
-              GROUND,
+              WILDGRASS,
             ]
           };
           var GARDENMATERIALS_BLUE = {
@@ -333,7 +326,9 @@ angular.module('metacastleApp')
             ]),
             decorations: {
               //[HALFTREES]: sDecorations.random_bush,
-              [HALFTREES]: sDecorations.random_grass,
+              [TREE]: sDecorations.tall_tree,
+              [BUSH]: sDecorations.random_bush,
+              [WILDGRASS]: sDecorations.random_grass,
             }
           };
           var recipe = interpretMetaRecipe(CROSS_DEF);
