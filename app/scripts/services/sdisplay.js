@@ -373,11 +373,13 @@ angular.module('metacastleApp')
   this.tall_fruit_tree = new HighTile(1123, 2)
 
   // Bushes
-  this.bush = new SingleTile(916)
-  this.red_bush = new SingleTile(917)
-  this.blue_bush = new SingleTile(918)
-  this.bush_redfruits = new SingleTile(942)
-  this.bush_purplefruits = new SingleTile(1142)
+  this.bush = new SingleTile(919)
+  this.red_bush = new SingleTile(920)
+  this.blue_bush = new SingleTile(921)
+  this.bush_redfruits = new SingleTile(924)
+  this.bush_purplefruits = new SingleTile(1124)
+  this.random_bush = new RandomDecoration(0, 
+    [this.bush, this.bush, this.bush_redfruits, this.bush_purplefruits]);
   
   // Single Flowers
   this.blue_singleflower = new SingleTile(928)
@@ -388,6 +390,9 @@ angular.module('metacastleApp')
   this.cactus = new SingleTile(922)
   this.grassblades2 = new SingleTile(1022)
   this.grassblades3 = new SingleTile(1122)
+  this.random_grass = new RandomDecoration(5, 
+    [this.grassblades2, this.grassblades3, this.grassblades2, this.grassblades3, 
+      this.white_singleflower]);
 
   
   this.workItems = [

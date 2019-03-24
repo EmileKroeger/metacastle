@@ -38,6 +38,11 @@ angular.module('metacastleApp')
       this.grid = grid;
       this.defaultTile = defaultTile;
     }
+
+    Shape.prototype.set = function(x, y, tileDef) {
+      this.grid.set(x, y, tileDef);
+    }
+    
     Shape.prototype.quarterField = function(wid, hei, cx, cy, tiles) {
       for (var x=0; x < wid; x++) {
         for (var y=0; y < hei; y++) {
@@ -53,15 +58,15 @@ angular.module('metacastleApp')
             // Terrain B
             i = 2;
           }
-          this.grid.set(x, y, tiles[i]);
+          this.set(x, y, tiles[i]);
         }
       }
     }
-    
+
     Shape.prototype.addRect = function(x0, y0, wid, hei, tile) {
       for (var x=x0; x<(x0+wid); x++) {
         for (var y=y0; y<(y0+hei); y++) {
-          this.grid.set(x, y, tile);
+          this.set(x, y, tile);
         }
       }
     }
@@ -78,21 +83,23 @@ angular.module('metacastleApp')
       var cy = featureDef.cy;
       if (featureDef.type == "circle") {
         var layers = featureDef.layers;
-        // Go through them backwards
+        // Go through layers backwards
         for (var i = 0; i < layers.length; i++) {
           var radius = layers.length - i;
           this.addCross(cx, cy, 2, radius, layers[i]);
         }
       } else if (featureDef.type == "rectangle") {
         var layers = featureDef.layers;
-        // Go through them backwards
+        // Go through layers backwards
         for (var i = 0; i < layers.length; i++) {
           var radius = layers.length - i;
           var lenX = radius + featureDef.extra_x;
           var lenY = radius + featureDef.extra_y;
           this.addRect(cx - lenX, cy  - lenY, 2 * lenX + 1, 2 * lenY + 1, layers[i]);
         }
-        
+      } else if (featureDef.type == "vertical") {
+      } else if (featureDef.type == "maze") {
+      } else if (featureDef.type == "blobs") {
       }
     }
 
@@ -160,14 +167,28 @@ angular.module('metacastleApp')
           for (var tileType in recipe.materials) {
             recipe.materials[tileType].fillRegion(grid.map, tileType);
           }
-          // Special: fill some trees
-          for (var x = 0; x < scene.wid; x++) {
-            for (var y = 0; y < scene.wid; y++) {
-              if (grid.map[x][y] == 500) {// halftrees
-                if ((x + y) % 2 == 0) {
-                  console.log("TODO: add decoration at " + x);
-                  sDecorations.tall_blue_pine.render(x, y);
+          // Now, add decorations
+          if (recipe.decorations != undefined) {
+            console.log("dealing with decorations");
+            console.log(recipe.decorations);
+            console.log(recipe.decorations[500]);
+            for (var x = 0; x < scene.wid; x++) {
+              for (var y = 0; y < scene.wid; y++) {
+                var tileType = grid.map[x][y];
+                var decoration = recipe.decorations[tileType];
+                if (decoration != undefined) {
+                  console.log("has deco");
+                  decoration.render(x, y);
                 }
+
+                /*
+                if (grid.map[x][y] == 500) {// halftrees
+                  if ((x + y) % 2 == 0) {
+                    console.log("TODO: add decoration at " + x);
+                    sDecorations.tall_blue_pine.render(x, y);
+                  }
+                }
+                */
               }
             }
           }
@@ -308,8 +329,12 @@ angular.module('metacastleApp')
               GARDENMATERIALS_BLUE,
               GARDENMATERIALS_RED,
               GARDENMATERIALS_RED2,
-              GARDENMATERIALS_GRASSES,
+              //GARDENMATERIALS_GRASSES,
             ]),
+            decorations: {
+              //[HALFTREES]: sDecorations.random_bush,
+              [HALFTREES]: sDecorations.random_grass,
+            }
           };
           var recipe = interpretMetaRecipe(CROSS_DEF);
           render(recipe, scene);
