@@ -46,6 +46,12 @@ angular.module('metacastleApp')
   this.choice = function(array) {
     return array[Math.floor(Math.random() * array.length)];
   }
+  this.popChoice = function(array) {
+    var i = Math.floor(Math.random() * array.length);
+    var value = array[i];
+    array.splice(i, 1);
+    return value;
+  }
   
   // Geometry utils
   // Helper for getting lines

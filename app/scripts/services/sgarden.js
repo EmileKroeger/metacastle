@@ -8,7 +8,7 @@
  * Service in the metacastleApp.
  */
 angular.module('metacastleApp')
-  .service('sShapes', function sShapes() {
+  .service('sShapes', function sShapes(sUtils) {
     /*
     // What I want my garden code to look like
     canvas = BaseCanvas(30, 30);
@@ -34,10 +34,82 @@ angular.module('metacastleApp')
     ShapeGrid.prototype.set = function(x, y, value) {
       this.map[x][y] = value;
     }
+    ShapeGrid.prototype.get = function(x, y) {
+      return this.map[x][y];
+    }
+
+
+
+
+    var STATUS_UNDECIDED = 0;
+    var STATUS_GROUND = 1;
+    var STATUS_WALL = 2;
+    
+    function MazeBuilder(wid, hei) {
+      console.log("wid: " + wid + " hei: " + hei); 
+      this.wid = wid;
+      this.hei = hei;
+      this.grid = new ShapeGrid(wid, hei);
+      this.border = []
+    }
+    MazeBuilder.prototype.checkBorder = function(i, j) {
+      if (this.grid.get(i, j) == STATUS_UNDECIDED) {
+        this.border.push({i: i, j: j});
+      }
+    }
+    MazeBuilder.prototype.isValidGround = function(i, j) {
+      var count = 0;
+      if (this.grid.get(i+1, j) == STATUS_GROUND) { count += 1; }
+      if (this.grid.get(i-1, j) == STATUS_GROUND) { count += 1; }
+      if (this.grid.get(i, j+1) == STATUS_GROUND) { count += 1; }
+      if (this.grid.get(i, j-1) == STATUS_GROUND) { count += 1; }
+      return count <= 1;
+    }
+    MazeBuilder.prototype.addGround = function(i, j) {
+      this.grid.set(i, j, STATUS_GROUND);
+      this.checkBorder(i-1, j);
+      this.checkBorder(i+1, j);
+      this.checkBorder(i, j-1);
+      this.checkBorder(i, j+1);
+    }
+    
+    MazeBuilder.prototype.fill = function(i0, j0) {
+      for (var i = 0; i < this.wid; i++) {
+        for (var j = 0; j < this.hei; j++) {
+          if ((i == 0) || (i == this.wid - 1) || (j == 0) || (j == this.hei - 1) ) {
+            this.grid.set(i, j, STATUS_WALL);
+          } else {
+            this.grid.set(i, j, STATUS_UNDECIDED);
+          }
+        }
+      }
+      this.addGround(i0, j0);
+      while (this.border.length > 0) {
+        var point = sUtils.popChoice(this.border);
+        if (this.isValidGround(point.i, point.j)) {
+          this.addGround(point.i, point.j)
+        } else {
+          this.grid.set(point.i, point.j, STATUS_WALL);
+        }
+      }
+      //this.grid.set(x0, y0, STATUS_UNDECIDED);
+    }
+    MazeBuilder.prototype.forTiles = function(callback) {
+      for (var i = 0; i < this.wid; i++) {
+        for (var j = 0; j < this.wid; j++) {
+          callback(i, j, this.grid.get(i, j) == STATUS_WALL);
+        }
+      }
+    }
+
+
+
     function Shape(grid, defaultTile) {
       this.grid = grid;
       this.defaultTile = defaultTile;
     }
+
+
 
     Shape.prototype.set = function(x, y, tileDef) {
       if (Array.isArray(tileDef)) {
@@ -114,13 +186,41 @@ angular.module('metacastleApp')
           this.addRect(cx - lenX, cy  - lenY, 2 * lenX + 1, 2 * lenY + 1, layers[i]);
         }
       } else if (featureDef.type == "maze") {
+        var halfWid = featureDef.halfWid;
+        var halfHei = featureDef.halfHei;
+        var bg = featureDef.bg;
+        var fg = featureDef.fg;
+        // Prim's algorithm
+        var STATUS_WALL = 1;
+        var STATUS_GROUND = 2;
+        var STATUS_EDGE = 3;
+        var wid = 2 * halfWid - 1;
+        var hei = 2 * halfHei - 1;
+        var x0 = cx - halfWid + 1
+        var y0 = cy - halfHei + 1
+        this.addRect(x0 - 1, y0 - 1, wid + 2, hei + 2, bg);
+        var mazeBuilder = new MazeBuilder(wid, hei);
+        mazeBuilder.fill(2, 0);
+        var self = this;
+        mazeBuilder.forTiles(function(i, j, isWall) {
+          var x = x0 + i;
+          var y = y0 + j;
+          if (isWall) {
+            self.set(x, y, fg);
+          } else {
+            self.set(x, y, bg);
+          }
+        })
+        
       } else if (featureDef.type == "blobs") {
       }
     }
+    
 
     // Define these as service globals
     this.ShapeGrid = ShapeGrid;
     this.Shape = Shape;
+    //this.MazeBuilder = MazeBuilder;
   })
   .service('sGarden', function sGarden(sStyles, sBuildings, sUtils,
       sDecorators, sDecorations, sMaterials, sDisplay, sShapes) {
@@ -305,6 +405,13 @@ angular.module('metacastleApp')
               GROUND,
             ]
           };
+          var RECT_MAZE = {
+            type: "maze",
+            halfWid: 8,
+            halfHei: 6,
+            bg: GROUND,
+            fg: BUSH,
+          };
           var GARDENMATERIALS_BLUE = {
               [WATER]: sMaterials.WATER_STONE,
               [DECORATION_A]: sMaterials.WHITEFLOWERS,
@@ -345,12 +452,15 @@ angular.module('metacastleApp')
                 cx: 14,
                 cy: 15,
                 "!MERGE": oneOf([
+                  /*
                   PLACE_WITH_TREES,
                   VERTICAL_HALL,
                   DOUBLE_VERTICAL_HALL,
                   HORIZONTAL_POND_WITH_ISLAND,
                   CIRCULAR_POND_WITH_ISLAND,
                   MEDIUM_POND,
+                  */
+                  RECT_MAZE,
                 ]),
               }
             ],
@@ -368,7 +478,8 @@ angular.module('metacastleApp')
                 sDecorations.short_fruit_tree,
                 sDecorations.tall_fruit_tree,
               ]),
-              [BUSH]: sDecorations.random_bush,
+              //[BUSH]: sDecorations.random_bush,
+              [BUSH]: sDecorations.short_fruit_tree,
               [WILDGRASS]: sDecorations.random_grass,
             }
           };
