@@ -96,8 +96,9 @@ angular.module('metacastleApp')
     }
     MazeBuilder.prototype.forTiles = function(callback) {
       for (var i = 0; i < this.wid; i++) {
-        for (var j = 0; j < this.wid; j++) {
-          callback(i, j, this.grid.get(i, j) == STATUS_WALL);
+        for (var j = 0; j < this.hei; j++) {
+          // Undecided stays walls
+          callback(i, j, this.grid.get(i, j) != STATUS_GROUND);
         }
       }
     }
@@ -340,6 +341,7 @@ angular.module('metacastleApp')
         var TREE = 500
         var BUSH = 600
         var WILDGRASS = 700
+        var SHORTTREE = 800
 
         this.rendererGarden = function(scene) {
           var CIRCULAR_POND_WITH_ISLAND = {
@@ -407,10 +409,10 @@ angular.module('metacastleApp')
           };
           var RECT_MAZE = {
             type: "maze",
-            halfWid: 8,
-            halfHei: 6,
+            halfWid: oneOf([5, 7, 9]),
+            halfHei: oneOf([5, 7, 9]),
             bg: GROUND,
-            fg: BUSH,
+            fg: oneOf([BUSH, SHORTTREE, SHORTTREE]),
           };
           var GARDENMATERIALS_BLUE = {
               [WATER]: sMaterials.WATER_STONE,
@@ -453,13 +455,13 @@ angular.module('metacastleApp')
                 cy: 15,
                 "!MERGE": oneOf([
                   /*
+                  */
                   PLACE_WITH_TREES,
                   VERTICAL_HALL,
                   DOUBLE_VERTICAL_HALL,
                   HORIZONTAL_POND_WITH_ISLAND,
                   CIRCULAR_POND_WITH_ISLAND,
                   MEDIUM_POND,
-                  */
                   RECT_MAZE,
                 ]),
               }
@@ -478,8 +480,8 @@ angular.module('metacastleApp')
                 sDecorations.short_fruit_tree,
                 sDecorations.tall_fruit_tree,
               ]),
-              //[BUSH]: sDecorations.random_bush,
-              [BUSH]: sDecorations.short_fruit_tree,
+              [BUSH]: sDecorations.random_bush,
+              [SHORTTREE]: sDecorations.short_fruit_tree,
               [WILDGRASS]: sDecorations.random_grass,
             }
           };
